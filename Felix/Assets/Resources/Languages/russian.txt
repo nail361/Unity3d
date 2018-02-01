@@ -1,0 +1,145 @@
+#START#
+LOADING
+ЗАГРУЗКА
+#
+PlayBTN
+Играть
+#
+GamePause
+ПАУЗА
+#
+Milk
+Молоко
+#
+GameOver
+Вы проиграли
+#
+GameWin
+Уровень пройден!
+#
+Inventory
+Инвентарь
+#
+Bag
+Рюкзак
+#
+BuyFish
+Купить за
+#
+ShowAds
+за рекламу
+#
+AdsWait
+Попробуйте позже
+#
+Exchange
+Обменять
+#
+Score
+Рекорд
+#
+Continue
+Продолжить
+#
+Surrender
+Сдаться
+#
+SecShort
+сек.
+#
+Dust
+Кожура
+#
+Box
+Коробка
+#
+Helicopter
+Вертолётик
+#
+Voltage
+Перегрузка
+#
+Fast
+Cкороходы
+#
+Map
+Карта
+#
+NoWeb
+Подключите интернет!
+#
+Take
+Получить
+#
+DailyReward
+Ежедневный бонус
+#
+Days
+день
+#
+RateQuestion
+Вам понравилась игра?
+#
+Accept
+Да
+#
+Deny
+Нет
+#
+RateTitle
+Оцените нас на 5 звёзд?
+#
+RateUs
+Оценить игру
+#
+Remind
+Напомнить позже
+#
+SayStart
+Начнём игру!
+#
+SaySosige
+У меня уже есть сосиска
+#
+SayExit
+Отнесём её к выходу
+#
+SayHurry
+Поторопись!
+#
+SayFridge
+Холодно
+#
+SayHide
+Спрячусь здесь
+#
+SayHot
+Жарковато
+#
+SayTV
+Что там показывают?
+#
+SayOops
+Упс...
+#
+SayDust
+Немного мусора не помешает
+#
+SayBox
+Так меня никто не найдёт
+#
+SayHelicopter
+Юхуу, полетели!
+#
+SayVoltage
+Странный звук
+#
+SaySpeed
+Я супер быстрый!
+#
+SayMap
+Так виднее
+#
+SayNextSosige
+Отлично! Давай за следующей
+#END#

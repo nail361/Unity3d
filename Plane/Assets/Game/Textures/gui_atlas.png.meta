@@ -1,0 +1,231 @@
+fileFormatVersion: 2
+guid: fbe601d8c726d6944ab38345fde7d601
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: gui_atlas_0
+    21300002: gui_atlas_1
+    21300004: gui_atlas_2
+    21300006: gui_atlas_3
+    21300008: gui_atlas_4
+    21300010: gui_atlas_5
+    21300012: gui_atlas_6
+    21300014: gui_atlas_7
+    21300016: gui_atlas_8
+    21300018: gui_atlas_9
+    21300020: gui_atlas_10
+    21300022: gui_atlas_11
+    21300024: gui_atlas_12
+    21300026: gui_atlas_13
+    21300028: gui_atlas_14
+    21300030: gui_atlas_15
+    21300032: plane4
+    21300034: plane1
+    21300042: plane3
+    21300044: s
+    21300046: play
+    21300050: h
+    21300052: r
+    21300056: plane2
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: .25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  seamlessCubemap: 0
+  textureFormat: -3
+  maxTextureSize: 512
+  textureSettings:
+    filterMode: 1
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: .5, y: .5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: gui_atlas_0
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 379
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: gui_atlas_1
+      rect:
+        serializedVersion: 2
+        x: 138
+        y: 379
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: gui_atlas_2
+      rect:
+        serializedVersion: 2
+        x: 271
+        y: 443
+        width: 128
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: gui_atlas_3
+      rect:
+        serializedVersion: 2
+        x: 404
+        y: 443
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: gui_atlas_4
+      rect:
+        serializedVersion: 2
+        x: 271
+        y: 374
+        width: 128
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: gui_atlas_5
+      rect:
+        serializedVersion: 2
+        x: 404
+        y: 374
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: gui_atlas_6
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 246
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: gui_atlas_7
+      rect:
+        serializedVersion: 2
+        x: 138
+        y: 246
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: gui_atlas_8
+      rect:
+        serializedVersion: 2
+        x: 271
+        y: 305
+        width: 128
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: gui_atlas_9
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 113
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: gui_atlas_10
+      rect:
+        serializedVersion: 2
+        x: 138
+        y: 177
+        width: 128
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: gui_atlas_11
+      rect:
+        serializedVersion: 2
+        x: 271
+        y: 236
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: gui_atlas_12
+      rect:
+        serializedVersion: 2
+        x: 138
+        y: 108
+        width: 128
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: gui_atlas_13
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 44
+        width: 128
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: gui_atlas_14
+      rect:
+        serializedVersion: 2
+        x: 138
+        y: 71
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: gui_atlas_15
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 7
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+  spritePackingTag: 
+  userData: 

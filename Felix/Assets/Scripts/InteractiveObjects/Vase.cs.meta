@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: ce475acb5adb3d14298f1a235a5cf8aa
+timeCreated: 1455026288
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - action_btn: {instanceID: 0}
+  - empty_place: {fileID: 21300002, guid: ed8b9b4fc3ec47744bc3163ff9425a80, type: 3}
+  - dust_sprite: {fileID: 21300000, guid: ed8b9b4fc3ec47744bc3163ff9425a80, type: 3}
+  - dustPref: {fileID: 177256, guid: 42b71c85be5b4ae40bae8835c462cc67, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

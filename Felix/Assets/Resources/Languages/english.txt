@@ -1,0 +1,145 @@
+#START#
+LOADING
+LOADING
+#
+PlayBTN
+Play
+#
+GamePause
+PAUSE
+#
+Milk
+Milk
+#
+GameOver
+GAME OVER
+#
+GameWin
+Level complete!
+#
+Inventory
+Inventory
+#
+Bag
+Bag
+#
+BuyFish
+Buy for
+#
+ShowAds
+Show Ads
+#
+AdsWait
+Try later
+#
+Exchange
+Exchange
+#
+Score
+Score
+#
+Continue
+Continue
+#
+Surrender
+Surrender
+#
+SecShort
+sec.
+#
+Dust
+Banana
+#
+Box
+Box
+#
+Helicopter
+Helicopter
+#
+Voltage
+Voltage
+#
+Fast
+Fast boots
+#
+Map
+Map
+#
+NoWeb
+Connect the internet!
+#
+Take
+Take
+#
+DailyReward
+Daily reward
+#
+Days
+days
+#
+RateQuestion
+Do you like Felix?
+#
+Accept
+Yes
+#
+Deny
+No
+#
+RateTitle
+Rate us 5 stars
+#
+RateUs
+Rate
+#
+Remind
+Remind me later
+#
+SayStart
+Let's play!
+#
+SaySosige
+I has already one
+#
+SayExit
+Take it to the exit
+#
+SayHurry
+Hurry up!
+#
+SayFridge
+It's cold
+#
+SayHide
+Hide here
+#
+SayHot
+It's hot
+#
+SayTV
+What's on TV today?
+#
+SayOops
+Oops...
+#
+SayDust
+Dust
+#
+SayBox
+Here no one will find me
+#
+SayHelicopter
+Let's Fly!
+#
+SayVoltage
+Strange sound
+#
+SaySpeed
+I'm the fastest
+#
+SayMap
+Bird's-eye
+#
+SayNextSosige
+Excellent! Next sausage is waiting
+#END#

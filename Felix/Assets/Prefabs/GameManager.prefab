@@ -1,0 +1,74 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &124846
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 490386}
+  - 114: {fileID: 11458802}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &490386
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 124846}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+--- !u!114 &11458802
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 124846}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e973bcd726f1edd449e4d7359d1985a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FISH_COST: 0100000002000000050000000a000000
+  ITEM_COST: 0200000003000000040000000500000006000000010000000800000009000000
+  MILK_COST: 0a000000120000001a0000001e0000002300000028000000
+  loading_img: {fileID: 0}
+  star_sprites: []
+  star_count: 0
+  score: 0
+  milk_pos: 000000000000000000000000000000000000000000000000
+  items: 
+  bag: 
+  level_params: 
+  all_score: 0
+  sound_on: 0
+  music_on: 0
+  cur_stage: 0
+  cur_level: 0
+  cur_mode: 0
+  new_record: 0
+  add_level_fish: 0
+  milk_panel: {fileID: 0}
+  pause: 0
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 124846}
+  m_IsPrefabParent: 1

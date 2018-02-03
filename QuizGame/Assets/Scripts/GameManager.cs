@@ -1,35 +1,47 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
 using System;
 
 public class GameManager : MonoBehaviour {
 
+	public static GameManager _instance;
+
 	public GameSettings gameSettings;
+
+	[SerializeField]
+	private GameObject cubePref;
+	[SerializeField]
+	private GameObject cubeBorder;
+
+	private List<GameObject> cubePool = new List<GameObject>();
 
 	private List<Word> wordsList = new List<Word>();
 	private TextAsset textData;
 
+	private string curWord = "";
+	private int wordCounter = 0;
+	private float dx = 1.15f;
+
 	void Start () {
+
+		if (!_instance)
+			_instance = this;
+		else
+			Destroy (gameObject);
+
 		StartCoroutine("DownloadAssetBundle");
 	}
 
 	public IEnumerator DownloadAssetBundle() {
-
-//#if UNITY_EDITOR
-		//textData = (TextAsset)UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/AssetBundles/wordsBank", typeof(TextAsset));
-		//yield return null;
-
-//#else
 		while (!Caching.ready){
 			OnBundleLoaded();
 			yield return null;
 		}
 
-		using(WWW www = WWW.LoadFromCacheOrDownload ("file://C:/Users/balyasnikov.ds/Documents/UnityProjects/QuizGame/Assets/AssetBundles/wordsBank", 0)){
+		using(WWW www = WWW.LoadFromCacheOrDownload ("file://E:/UnityProjects/QuizGame/Assets/AssetBundles/wordsbank", 0)){
 			yield return www;
-			if (www.error != null) throw new Exception("WWW download:" + www.error);
+			if (www.error != null) throw new Exception("WWW download:" + www.error + " url:" + www.url);
 
 			AssetBundle assetBundle = www.assetBundle;
 			
@@ -39,15 +51,13 @@ public class GameManager : MonoBehaviour {
 			OnBundleLoaded();
 			assetBundle.Unload(false);
 		}
-
-//#endif
 	}
 
 	private void OnBundleLoaded(){
 		FillWords ();
 		SortWords ();
 
-		//StartGame ();
+		StartGame ();
 	}
 
 	private void FillWords(){
@@ -74,6 +84,43 @@ public class GameManager : MonoBehaviour {
 			}
 		}
 
+	}
+
+	private void StartGame(){
+		GetNextWord();
+		InitCubes();
+	}
+
+	private void InitCubes(){
+
+		int i;
+		CubeLetter cl = null;
+
+		for( i = 0; i < curWord.Length; i++) {
+			if (cubePool.Count <= i) {
+				cubePool.Add( Instantiate(cubePref) );
+				cubePool[i].transform.position.Set( dx * i, 0 ,0);
+			}
+
+			cl = cubePool[i].GetComponent<CubeLetter>();
+			cl.SetLetter(curWord[i]);
+			cubePool[i].transform.rotation.eulerAngles.Set(0,180,0);
+		}
+
+		for (; i < cubePool.Count; i++) {
+			cubePool [i].SendMessage("Hide");
+		}
+	}
+
+	private void GetNextWord(){
+
+		if (wordsList.Count >= wordCounter) {
+			//You are win
+			return;
+		}
+
+		curWord = wordsList[wordCounter].key;
+		wordCounter++;
 	}
 
 	private void SortWords(){

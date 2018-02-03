@@ -11,9 +11,16 @@ public class CubeLetter : MonoBehaviour {
 
 	private char letter;
 
+	private bool isActive = false;
+
+	public bool IsActive{
+		get{return isActive;}
+	}
+
 	public void SetLetter (char letter) {
 		this.letter = letter;
 		letterText.text =  Char.ToString(letter);
+		isActive = true;
 	}
 
 	public char GetLetter () {
@@ -28,5 +35,10 @@ public class CubeLetter : MonoBehaviour {
 			iterator--;
 			yield return new WaitForSeconds (0.01f);
 		}
+	}
+
+	public void Hide(){
+		gameObject.SetActive(false);
+		isActive = false;
 	}
 }

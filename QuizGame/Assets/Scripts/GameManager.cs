@@ -39,7 +39,7 @@ public class GameManager : MonoBehaviour {
 			yield return null;
 		}
 
-		using(WWW www = WWW.LoadFromCacheOrDownload ("file://E:/UnityProjects/QuizGame/Assets/AssetBundles/wordsbank", 0)){
+		using(WWW www = WWW.LoadFromCacheOrDownload ("file://" + Application.dataPath + "/AssetBundles/wordsbank", 0)){
 			yield return www;
 			if (www.error != null) throw new Exception("WWW download:" + www.error + " url:" + www.url);
 
@@ -96,15 +96,18 @@ public class GameManager : MonoBehaviour {
 		int i;
 		CubeLetter cl = null;
 
+		Debug.Log (curWord);
+
 		for( i = 0; i < curWord.Length; i++) {
 			if (cubePool.Count <= i) {
 				cubePool.Add( Instantiate(cubePref) );
-				cubePool[i].transform.position.Set( dx * i, 0 ,0);
+				cubePool[i].transform.SetParent(cubeBorder.transform);
+				cubePool[i].transform.position = new Vector3( dx * i, 0 ,0);
 			}
 
 			cl = cubePool[i].GetComponent<CubeLetter>();
 			cl.SetLetter(curWord[i]);
-			cubePool[i].transform.rotation.eulerAngles.Set(0,180,0);
+			//cubePool[i].transform.rotation.eulerAngles = new Vector3(0,180,0);
 		}
 
 		for (; i < cubePool.Count; i++) {
@@ -113,9 +116,9 @@ public class GameManager : MonoBehaviour {
 	}
 
 	private void GetNextWord(){
-
-		if (wordsList.Count >= wordCounter) {
+		if (wordCounter >= wordsList.Count) {
 			//You are win
+			Debug.Log("You are win");
 			return;
 		}
 

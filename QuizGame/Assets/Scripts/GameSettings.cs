@@ -10,7 +10,8 @@ public class GameSettings : ScriptableObject {
 	public enum OPTIONS
 	{
 		Up = 0,
-		Down = 1
+		Down = 1,
+		Random = 2
 	}
 
 	public OPTIONS OrderBy;

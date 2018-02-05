@@ -31,7 +31,7 @@ public class CubeLetter : MonoBehaviour {
 	{
 		int iterator = 18;
 		while(iterator > 0){
-			transform.Rotate(Vector3.forward,10);
+			transform.Rotate(Vector3.up,10);
 			iterator--;
 			yield return new WaitForSeconds (0.01f);
 		}

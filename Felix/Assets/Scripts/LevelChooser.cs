@@ -72,7 +72,9 @@ public class LevelChooser : MonoBehaviour {
 
                 //потом выключить
                 if (Int32.Parse(arr[3]) >= 5) {
+					#if UNITY_ANDROID
                     AndroidNativeUtils.ShowMsg("Sorry, not in alpha version");
+					#endif
                     return;
                 }
                 

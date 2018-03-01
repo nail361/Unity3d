@@ -131,7 +131,11 @@ public class MainMenu : MonoBehaviour
 
     public void InviteFriends()
     {
-        if (!FB.IsInitialized) AndroidNativeUtils.ShowMsg(LanguageManager.GetText("NoWeb"));
+		if (!FB.IsInitialized) {
+			#if UNITY_ANDROID
+			AndroidNativeUtils.ShowMsg(LanguageManager.GetText("NoWeb"));
+			#endif
+		}
 
         FB.ShareLink(
             new System.Uri("https://play.google.com/store/apps/details?id=com.SmileApps.Felix"),

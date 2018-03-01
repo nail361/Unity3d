@@ -23,8 +23,8 @@ namespace GooglePlayGames
     using GooglePlayGames.BasicApi.Events;
     using GooglePlayGames.BasicApi.Multiplayer;
     using GooglePlayGames.BasicApi.Nearby;
-    using GooglePlayGames.BasicApi.Quests;
     using GooglePlayGames.BasicApi.SavedGame;
+    using GooglePlayGames.BasicApi.Video;
     using GooglePlayGames.OurUtils;
     using UnityEngine;
     using UnityEngine.SocialPlatforms;
@@ -82,6 +82,7 @@ namespace GooglePlayGames
         /// <param name="configuration">Configuration object to use.</param>
         private PlayGamesPlatform(PlayGamesClientConfiguration configuration)
         {
+            GooglePlayGames.OurUtils.Logger.w("Creating new PlayGamesPlatform");
             this.mLocalUser = new PlayGamesLocalUser(this);
             this.mConfiguration = configuration;
         }
@@ -185,13 +186,13 @@ namespace GooglePlayGames
             }
         }
 
-        /// <summary>Gets the quests client object.</summary>
-        /// <value>The quests client.</value>
-        public IQuestsClient Quests
+        /// <summary>Gets the video client object.</summary>
+        /// <value>The video client.</value>
+        public IVideoClient Video
         {
             get
             {
-                return mClient.GetQuestsClient();
+                return mClient.GetVideoClient();
             }
         }
 
@@ -298,6 +299,16 @@ namespace GooglePlayGames
         }
 
         /// <summary>
+        /// Sets the gravity for popups (Android only).
+        /// </summary>
+        /// <remarks>This can only be called after authentication.  It affects
+        /// popups for achievements and other game services elements.</remarks>
+        /// <param name="gravity">Gravity for the popup.</param>
+        public void SetGravityForPopups(Gravity gravity) {
+            mClient.SetGravityForPopups(gravity);
+        }
+
+        /// <summary>
         /// Specifies that the ID <c>fromId</c> should be implicitly replaced by <c>toId</c>
         /// on any calls that take a leaderboard or achievement ID.
         /// </summary>
@@ -345,6 +356,19 @@ namespace GooglePlayGames
         /// with <c>true</c> if authentication was successful, <c>false</c>
         /// otherwise.
         /// </param>
+        public void Authenticate(Action<bool, string> callback)
+        {
+            Authenticate(callback, false);
+        }
+
+        /// <summary>
+        /// Authenticate the local user with the Google Play Games service.
+        /// </summary>
+        /// <param name='callback'>
+        /// The callback to call when authentication finishes. It will be called
+        /// with <c>true</c> if authentication was successful, <c>false</c>
+        /// otherwise.
+        /// </param>
         /// <param name='silent'>
         /// Indicates whether authentication should be silent. If <c>false</c>,
         /// authentication may show popups and interact with the user to obtain
@@ -355,6 +379,28 @@ namespace GooglePlayGames
         /// triggers normal (not silent) authentication.
         /// </param>
         public void Authenticate(Action<bool> callback, bool silent)
+        {
+            Authenticate((bool success, string msg) => callback(success), silent);
+        }
+
+        /// <summary>
+        /// Authenticate the local user with the Google Play Games service.
+        /// </summary>
+        /// <param name='callback'>
+        /// The callback to call when authentication finishes. It will be called
+        /// with <c>true</c> if authentication was successful, <c>false</c>
+        /// otherwise.
+        /// </param>
+        /// <param name='silent'>
+        /// Indicates whether authentication should be silent. If <c>false</c>,
+        /// authentication may show popups and interact with the user to obtain
+        /// authorization. If <c>true</c>, there will be no popups or interaction with
+        /// the user, and the authentication will fail instead if such interaction
+        /// is required. A typical pattern is to try silent authentication on startup
+        /// and, if that fails, present the user with a "Sign in" button that then
+        /// triggers normal (not silent) authentication.
+        /// </param>
+        public void Authenticate(Action<bool, string> callback, bool silent)
         {
             // make a platform-specific Play Games client
             if (mClient == null)
@@ -375,6 +421,17 @@ namespace GooglePlayGames
         /// <param name="unused">Unused parameter for this implementation.</param>
         /// <param name="callback">Callback invoked when complete.</param>
         public void Authenticate(ILocalUser unused, Action<bool> callback)
+        {
+            Authenticate(callback, false);
+        }
+
+        /// <summary>
+        ///  Provided for compatibility with ISocialPlatform.
+        /// </summary>
+        /// <seealso cref="Authenticate(Action&lt;bool&gt;,bool)"/>
+        /// <param name="unused">Unused parameter for this implementation.</param>
+        /// <param name="callback">Callback invoked when complete.</param>
+        public void Authenticate(ILocalUser unused, Action<bool, string> callback)
         {
             Authenticate(callback, false);
         }
@@ -415,6 +472,8 @@ namespace GooglePlayGames
                 GooglePlayGames.OurUtils.Logger.e(
                     "GetUserId() can only be called after authentication.");
                 callback(new IUserProfile[0]);
+
+                return;
             }
 
             mClient.LoadUsers(userIds, callback);
@@ -442,35 +501,13 @@ namespace GooglePlayGames
         /// <summary>
         /// Get an id token for the user.
         /// </summary>
-        /// <param name="idTokenCallback"> A callback to be invoked after token is retrieved. Will be passed null value
-        /// on failure. </param>
-        public void GetIdToken(Action<string> idTokenCallback)
+        public string GetIdToken()
         {
             if (mClient != null)
             {
-                mClient.GetIdToken(idTokenCallback);
+                return mClient.GetIdToken();
             }
-            else
-            {
-                GooglePlayGames.OurUtils.Logger.e(
-                    "No client available, calling back with null.");
-                idTokenCallback(null);
-            }
-        }
-
-        /// <summary>
-        /// Returns an id token for the user.
-        /// </summary>
-        /// <returns>
-        /// An id token for the user.
-        /// </returns>
-        public string GetAccessToken()
-        {
-            if (mClient != null)
-            {
-                return mClient.GetAccessToken();
-            }
-
+            OurUtils.Logger.e("No client available, returning null.");
             return null;
         }
 
@@ -479,47 +516,61 @@ namespace GooglePlayGames
         /// </summary>
         /// <remarks>This code is used by the server application in order to get
         /// an oauth token.  For how to use this acccess token please see:
-        /// https://developers.google.com/drive/v2/web/auth/web-server
+        /// https://developers.google.com/drive/v2/web/auth/web-server.
+        /// To get another server auth code after the initial one returned, call
+        /// GetAnotherServerAuthCode().
         /// </remarks>
-        /// <param name="callback">Callback.</param>
-        public void GetServerAuthCode(Action<CommonStatusCodes, string> callback)
+        public string GetServerAuthCode()
         {
             if (mClient != null && mClient.IsAuthenticated())
             {
-                if (GameInfo.WebClientIdInitialized())
-                {
-                    mClient.GetServerAuthCode(GameInfo.WebClientId, callback);
-                }
-                else
-                {
-                    GooglePlayGames.OurUtils.Logger.e(
-                        "GetServerAuthCode requires a webClientId.");
-                    callback(CommonStatusCodes.DeveloperError, "");
-                }
+                return mClient.GetServerAuthCode();
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Gets another server auth code.
+        /// </summary>
+        /// <remarks>This method should be called after authenticating, and exchanging
+        /// the initial server auth code for a token.  This is implemented by signing in
+        /// silently, which if successful returns almost immediately and with a new
+        /// server auth code.
+        /// </remarks>
+        /// <param name="reAuthenticateIfNeeded">Calls Authenticate if needed when
+        /// retrieving another auth code. </param>
+        /// <param name="callback">Callback returning the auth code or null
+        /// if there was an error.  NOTE: This callback can return immediately.</param>
+        public void GetAnotherServerAuthCode(bool reAuthenticateIfNeeded,
+                                             Action<string> callback)
+        {
+            if(mClient != null && mClient.IsAuthenticated()) {
+                mClient.GetAnotherServerAuthCode(reAuthenticateIfNeeded, callback);
+            }
+            else if (mClient != null && reAuthenticateIfNeeded)
+            {
+                mClient.Authenticate((success, msg) => {
+                        if (success) {
+                            callback(mClient.GetServerAuthCode());
+                        } else {
+                            OurUtils.Logger.e("Re-authentication failed: " + msg);
+                            callback(null);
+                        }
+                }, false);
             }
             else
             {
-                GooglePlayGames.OurUtils.Logger.e(
-                    "GetServerAuthCode can only be called after authentication.");
-
-                callback(CommonStatusCodes.SignInRequired, "");
+                OurUtils.Logger.e("Cannot call GetAnotherServerAuthCode: not authenticated");
+                callback(null);
             }
         }
 
         /// <summary>
-        /// Gets the email of the current user.
-        /// This requires additional configuration of permissions in order
-        /// to work.
+        /// Gets the user's email.
         /// </summary>
-        /// <returns>The user email.</returns>
         public string GetUserEmail()
         {
-            if (mClient != null)
-            {
-                return mClient.GetUserEmail();
-            }
-
-            return null;
+            return mClient.GetUserEmail();
         }
 
         /// <summary>
@@ -696,7 +747,7 @@ namespace GooglePlayGames
                         " is less than or equal to 1. You might be trying to use values in the range of [0,1], while values are expected to be within the range [0,100]. If you are using the latter, you can safely ignore this message.");
                 }
 
-                int targetSteps = (int)((progress / 100) * totalSteps);
+                int targetSteps = (int)Math.Round((progress / 100f) * totalSteps);
                 int numSteps = targetSteps - curSteps;
                 GooglePlayGames.OurUtils.Logger.d("Target steps: " +
                     targetSteps + ", cur steps:" + curSteps);
@@ -722,6 +773,86 @@ namespace GooglePlayGames
                 GooglePlayGames.OurUtils.Logger.d("Progress " + progress +
                     " not enough to unlock non-incremental achievement.");
             }
+        }
+
+        /// <summary>
+        /// Reveals the achievement with the passed identifier. This is a Play Games extension of the ISocialPlatform API.
+        /// </summary>
+        /// <remarks>If the operation succeeds, the callback
+        /// will be invoked on the game thread with <code>true</code>. If the operation fails, the
+        /// callback will be invoked with <code>false</code>. This operation will immediately fail if
+        /// the user is not authenticated (i.e. the callback will immediately be invoked with
+        /// <code>false</code>). If the achievement is already in a revealed state, this call will
+        /// succeed immediately.
+        /// </remarks>
+        /// <param name='achievementID'>
+        /// The ID of the achievement to increment. This can be a raw Google Play
+        /// Games achievement ID (alphanumeric string), or an alias that was previously configured
+        /// by a call to <see cref="AddIdMapping" />.
+        /// </param>
+        /// <param name='callback'>
+        /// The callback to call to report the success or failure of the operation. The callback
+        /// will be called with <c>true</c> to indicate success or <c>false</c> for failure.
+        /// </param>
+        public void RevealAchievement(string achievementID, Action<bool> callback = null)
+        {
+            if (!IsAuthenticated())
+            {
+                GooglePlayGames.OurUtils.Logger.e(
+                    "RevealAchievement can only be called after authentication.");
+                if (callback != null)
+                {
+                    callback.Invoke(false);
+                }
+
+                return;
+            }
+
+            // map ID, if it's in the dictionary
+            GooglePlayGames.OurUtils.Logger.d(
+                "RevealAchievement: " + achievementID);
+            achievementID = MapId(achievementID);
+            mClient.RevealAchievement(achievementID, callback);
+        }
+
+        /// <summary>
+        /// Unlocks the achievement with the passed identifier. This is a Play Games extension of the ISocialPlatform API.
+        /// </summary>
+        /// <remarks>If the operation succeeds, the callback
+        /// will be invoked on the game thread with <code>true</code>. If the operation fails, the
+        /// callback will be invoked with <code>false</code>. This operation will immediately fail if
+        /// the user is not authenticated (i.e. the callback will immediately be invoked with
+        /// <code>false</code>). If the achievement is already unlocked, this call will
+        /// succeed immediately.
+        /// </remarks>
+        /// <param name='achievementID'>
+        /// The ID of the achievement to increment. This can be a raw Google Play
+        /// Games achievement ID (alphanumeric string), or an alias that was previously configured
+        /// by a call to <see cref="AddIdMapping" />.
+        /// </param>
+        /// <param name='callback'>
+        /// The callback to call to report the success or failure of the operation. The callback
+        /// will be called with <c>true</c> to indicate success or <c>false</c> for failure.
+        /// </param>
+        public void UnlockAchievement(string achievementID, Action<bool> callback = null)
+        {
+            if (!IsAuthenticated())
+            {
+                GooglePlayGames.OurUtils.Logger.e(
+                    "UnlockAchievement can only be called after authentication.");
+                if (callback != null)
+                {
+                    callback.Invoke(false);
+                }
+
+                return;
+            }
+
+            // map ID, if it's in the dictionary
+            GooglePlayGames.OurUtils.Logger.d(
+                "UnlockAchievement: " + achievementID);
+            achievementID = MapId(achievementID);
+            mClient.UnlockAchievement(achievementID, callback);
         }
 
         /// <summary>
@@ -810,19 +941,23 @@ namespace GooglePlayGames
             {
                 GooglePlayGames.OurUtils.Logger.e(
                     "LoadAchievementDescriptions can only be called after authentication.");
-                callback.Invoke(null);
+                if (callback != null)
+                {
+                    callback.Invoke(null);
+                }
+                return;
             }
 
             mClient.LoadAchievements(ach =>
+            {
+                IAchievementDescription[] data = new IAchievementDescription[ach.Length];
+                for (int i = 0; i < data.Length; i++)
                 {
-                    IAchievementDescription[] data = new IAchievementDescription[ach.Length];
-                    for (int i = 0; i < data.Length; i++)
-                    {
-                        data[i] = new PlayGamesAchievement(ach[i]);
-                    }
+                    data[i] = new PlayGamesAchievement(ach[i]);
+                }
 
-                    callback.Invoke(data);
-                });
+                callback.Invoke(data);
+            });
         }
 
         /// <summary>
@@ -835,18 +970,20 @@ namespace GooglePlayGames
             {
                 GooglePlayGames.OurUtils.Logger.e("LoadAchievements can only be called after authentication.");
                 callback.Invoke(null);
+
+                return;
             }
 
             mClient.LoadAchievements(ach =>
+            {
+                IAchievement[] data = new IAchievement[ach.Length];
+                for (int i = 0; i < data.Length; i++)
                 {
-                    IAchievement[] data = new IAchievement[ach.Length];
-                    for (int i = 0; i < data.Length; i++)
-                    {
-                        data[i] = new PlayGamesAchievement(ach[i]);
-                    }
+                    data[i] = new PlayGamesAchievement(ach[i]);
+                }
 
-                    callback.Invoke(data);
-                });
+                callback.Invoke(data);
+            });
         }
 
         /// <summary>
@@ -924,12 +1061,14 @@ namespace GooglePlayGames
         }
 
         /// <summary>
-        /// Loads the scores relative the player.  This returns the 25
+        /// Loads the scores relative the player.
+        /// </summary>
+        /// <remarks>This returns the 25
         /// (which is the max results returned by the SDK per call) scores
-        /// that are around the player's score on the Social, all time leaderboard.
+        /// that are around the player's score on the Public, all time leaderboard.
         /// Use the overloaded methods which are specific to GPGS to modify these
         /// parameters.
-        /// </summary>
+        /// </remarks>
         /// <param name="leaderboardId">Leaderboard Id</param>
         /// <param name="callback">Callback to invoke when completed.</param>
         public void LoadScores(string leaderboardId, Action<IScore[]> callback)
@@ -1036,7 +1175,7 @@ namespace GooglePlayGames
                 return;
             }
 
-            GooglePlayGames.OurUtils.Logger.d("ShowAchievementsUI callback is "  + callback);
+            GooglePlayGames.OurUtils.Logger.d("ShowAchievementsUI callback is " + callback);
             mClient.ShowAchievementsUI(callback);
         }
 
@@ -1099,7 +1238,10 @@ namespace GooglePlayGames
             if (!IsAuthenticated())
             {
                 GooglePlayGames.OurUtils.Logger.e("ShowLeaderboardUI can only be called after authentication.");
-                callback(UIStatus.NotAuthorized);
+                if (callback != null)
+                {
+                    callback(UIStatus.NotAuthorized);
+                }
                 return;
             }
 
@@ -1129,15 +1271,15 @@ namespace GooglePlayGames
             mDefaultLbUi = lbid;
         }
 
-       /// <summary>
-       /// Loads the friends that also play this game.  See loadConnectedPlayers.
-       /// </summary>
+        /// <summary>
+        /// Loads the friends that also play this game.  See loadConnectedPlayers.
+        /// </summary>
         /// <remarks>This is a callback variant of LoadFriends.  When completed,
         /// the friends list set in the user object, so they can accessed via the
         /// friends property as needed.
         /// </remarks>
         /// <param name="user">The current local user</param>
-       /// <param name="callback">Callback invoked when complete.</param>
+        /// <param name="callback">Callback invoked when complete.</param>
         public void LoadFriends(ILocalUser user, Action<bool> callback)
         {
             if (!IsAuthenticated())
@@ -1148,6 +1290,8 @@ namespace GooglePlayGames
                 {
                     callback(false);
                 }
+
+                return;
             }
 
             mClient.LoadFriends(callback);
@@ -1169,6 +1313,8 @@ namespace GooglePlayGames
                 {
                     callback(false);
                 }
+
+                return;
             }
 
             LeaderboardTimeSpan timeSpan;
@@ -1219,15 +1365,6 @@ namespace GooglePlayGames
         public void RegisterInvitationDelegate(InvitationReceivedDelegate deleg)
         {
             mClient.RegisterInvitationDelegate(deleg);
-        }
-
-        /// <summary>
-        /// Retrieves a bearer token associated with the current account.
-        /// </summary>
-        /// <returns>A bearer token for authorized requests.</returns>
-        public string GetToken()
-        {
-            return mClient.GetToken();
         }
 
         /// <summary>

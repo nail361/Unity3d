@@ -116,7 +116,7 @@ namespace Soomla.Store
 			EditorGUILayout.HelpBox("Store Settings", MessageType.None);
 
 			EditorGUILayout.BeginHorizontal();
-			SoomlaEditorScript.SelectableLabelField(packageNameLabel, PlayerSettings.bundleIdentifier);
+			SoomlaEditorScript.SelectableLabelField(packageNameLabel, PlayerSettings.applicationIdentifier);
 			EditorGUILayout.EndHorizontal();
 
 			EditorGUILayout.Space();

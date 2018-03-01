@@ -38,9 +38,9 @@ namespace Soomla
 #if UNITY_5
 			BuildTargetGroup.iOS,
 #else
-			BuildTargetGroup.iPhone,
+			BuildTargetGroup.iOS,
 #endif
-			BuildTargetGroup.WebPlayer,
+			BuildTargetGroup.WebGL,
 			BuildTargetGroup.Standalone
 		};
 #endif

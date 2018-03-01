@@ -61,7 +61,7 @@ namespace GooglePlayGames.BasicApi
     /// </remarks>
     /// <param name="callback">Callback.</param>
     /// <param name="silent">If set to <c>true</c> silent.</param>
-    void Authenticate(System.Action<bool> callback, bool silent);
+    void Authenticate(System.Action<bool, string> callback, bool silent);
 
     /// <summary>
     /// Returns whether or not user is authenticated.
@@ -73,10 +73,6 @@ namespace GooglePlayGames.BasicApi
     /// Signs the user out.
     /// </summary>
     void SignOut();
-
-    /// <summary>Retrieves an OAuth 2.0 bearer token for the client.</summary>
-    /// <returns>A string representing the bearer token.</returns>
-    string GetToken();
 
     /// <summary>
     /// Returns the authenticated user's ID. Note that this value may change if a user signs
@@ -102,30 +98,40 @@ namespace GooglePlayGames.BasicApi
     /// <summary>
     /// Returns an id token, which can be verified server side, if they are logged in.
     /// </summary>
-    /// <param name="idTokenCallback"> A callback to be invoked after token is retrieved. Will be passed null value
-    /// on failure. </param>
-    void GetIdToken(Action<string> idTokenCallback);
-        
-    /// <summary>
-    /// Gets an access token.
-    /// </summary>
-    /// <returns>An it token. <code>null</code> if they are not logged
-    /// in</returns>
-    string GetAccessToken();
+    string GetIdToken();
 
     /// <summary>
-    /// Asynchronously retrieves the server auth code for this client.
+    /// The server auth code for this client.
     /// </summary>
     /// <remarks>
     /// Note: This function is currently only implemented for Android.
     /// </remarks>
-    /// <param name="serverClientId">The Client ID.</param>
-    /// <param name="callback">Callback for response.</param>
-    void GetServerAuthCode(string serverClientId, Action<CommonStatusCodes, string> callback);
+    string GetServerAuthCode();
 
     /// <summary>
-    /// Gets the user email.
+    /// Gets another server auth code.
     /// </summary>
+    /// <remarks>This method should be called after authenticating, and exchanging
+    /// the initial server auth code for a token.  This is implemented by signing in
+    /// silently, which if successful returns almost immediately and with a new
+    /// server auth code.
+    /// </remarks>
+    /// <param name="reAuthenticateIfNeeded">Calls Authenticate if needed when
+    /// retrieving another auth code. </param>
+    /// <param name="callback">Callback returning the auth code, or null if there
+    /// was a problem.  NOTE: This callback can be called immediately.</param>
+    void GetAnotherServerAuthCode(bool reAuthenticateIfNeeded,
+                                  Action<string> callback);
+
+    /// <summary>
+    /// Gets the user's email.
+    /// </summary>
+    /// <remarks>The email address returned is selected by the user from the accounts present
+    /// on the device.  There is no guarantee this uniquely identifies the player.
+    /// For unique identification use the id property of the local player.
+    /// The user can also choose to not select any email address, meaning it is not
+    /// available.
+    /// </remarks>
     /// <returns>The user email or null if not authenticated or the permission is
     /// not available.</returns>
     string GetUserEmail();
@@ -332,10 +338,10 @@ namespace GooglePlayGames.BasicApi
     Events.IEventsClient GetEventsClient();
 
     /// <summary>
-    /// Gets the quests client.
+    /// Gets the video client.
     /// </summary>
-    /// <returns>The quests client.</returns>
-    Quests.IQuestsClient GetQuestsClient();
+    /// <returns>The video client.</returns>
+    Video.IVideoClient GetVideoClient();
 
     /// <summary>
     /// Registers the invitation delegate.
@@ -350,6 +356,14 @@ namespace GooglePlayGames.BasicApi
     /// </summary>
     /// <returns>The API client.</returns>
     IntPtr GetApiClient();
+
+    /// <summary>
+    /// Sets the gravity for popups (Android only).
+    /// </summary>
+    /// <remarks>This can only be called after authentication.  It affects
+    /// popups for achievements and other game services elements.</remarks>
+    /// <param name="gravity">Gravity for the popup.</param>
+    void SetGravityForPopups(Gravity gravity);
   }
 
   /// <summary>

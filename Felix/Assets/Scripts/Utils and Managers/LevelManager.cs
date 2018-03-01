@@ -67,7 +67,7 @@ public class LevelManager : MonoBehaviour
                 uint stars = GameManager.instance.levels[stage][level][mode_number];
                 for (uint star = 1; star <= 3; star++)
                 {
-                    GameObject star_object = mode.transform.FindChild("star_" + star.ToString()).gameObject;
+                    GameObject star_object = mode.transform.Find("star_" + star.ToString()).gameObject;
                     if (mode.GetComponent<SpriteRenderer>().sprite.name == mode_sprites_off[stage].name) star_object.SetActive(false);
                     else
                     {
@@ -142,7 +142,7 @@ public class LevelManager : MonoBehaviour
     private void CreateMilkBottle(uint level)
     {
         Transform levelGO = GameObject.Find("Stage_" + GameManager.instance.cur_stage.ToString() + "/" + "Level_" + level.ToString()).transform;
-        Vector3 bottle_pos = levelGO.FindChild("milk_place").localPosition;
+        Vector3 bottle_pos = levelGO.Find("milk_place").localPosition;
         GameObject bottle = Instantiate(bottle_of_milk, levelGO.transform, false) as GameObject;
         bottle.transform.localPosition = new Vector3(bottle_pos.x + UnityEngine.Random.Range(-0.4f, 0.1f), bottle_pos.y, bottle_pos.z);
         bottle.transform.localScale = new Vector3(0.6f,0.6f,0.6f);

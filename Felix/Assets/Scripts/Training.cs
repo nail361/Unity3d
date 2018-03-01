@@ -14,7 +14,7 @@ public class Training : MonoBehaviour {
         //для правильной работы, необходимо расположить тексты в texts по порядковому индексу = в LanguageManager
         foreach(GameObject step in Steps)
         {
-            Transform texts = step.transform.FindChild("texts");
+            Transform texts = step.transform.Find("texts");
             for(var i=0; i < texts.childCount; i++)
             {
                 if (i != (int)LanguageManager.curLanguage)

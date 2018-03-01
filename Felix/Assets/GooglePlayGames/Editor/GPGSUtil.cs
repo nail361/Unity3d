@@ -13,9 +13,7 @@
 //  See the License for the specific language governing permissions and
 //    limitations under the License.
 // </copyright>
-// Keep this even if NO_GPGS is defined so we can clean up the project
-// post build.
-#if (UNITY_ANDROID || UNITY_IPHONE)
+// Keep this even on unsupported configurations.
 
 namespace GooglePlayGames.Editor
 {
@@ -32,9 +30,6 @@ namespace GooglePlayGames.Editor
     /// </summary>
     public static class GPGSUtil
     {
-        /// <summary>Property key for project requiring G+ access
-        public const string REQUIREGOOGLEPLUSKEY = "proj.requireGPlus";
-
         /// <summary>Property key for project settings.</summary>
         public const string SERVICEIDKEY = "App.NearbdServiceId";
 
@@ -51,12 +46,6 @@ namespace GooglePlayGames.Editor
         public const string WEBCLIENTIDKEY = "and.ClientId";
 
         /// <summary>Property key for project settings.</summary>
-        public const string IOSCLIENTIDKEY = "ios.ClientId";
-
-        /// <summary>Property key for project settings.</summary>
-        public const string IOSBUNDLEIDKEY = "ios.BundleId";
-
-        /// <summary>Property key for project settings.</summary>
         public const string ANDROIDRESOURCEKEY = "and.ResourceData";
 
         /// <summary>Property key for project settings.</summary>
@@ -65,11 +54,8 @@ namespace GooglePlayGames.Editor
         /// <summary>Property key for project settings.</summary>
         public const string ANDROIDBUNDLEIDKEY = "and.BundleId";
 
-        /// <summary>Property key for project settings.</summary>
-        public const string IOSRESOURCEKEY = "ios.ResourceData";
-
-        /// <summary>Property key for project settings.</summary>
-        public const string IOSSETUPDONEKEY = "ios.SetupDone";
+        /// <summary>Property key for plugin version.</summary>
+        public const string PLUGINVERSIONKEY = "proj.pluginVersion";
 
         /// <summary>Property key for nearby settings done.</summary>
         public const string NEARBYSETUPDONEKEY = "android.NearbySetupDone";
@@ -79,6 +65,10 @@ namespace GooglePlayGames.Editor
 
         /// <summary>Constant for token replacement</summary>
         private const string SERVICEIDPLACEHOLDER = "__NEARBY_SERVICE_ID__";
+
+        private const string SERVICEID_ELEMENT_PLACEHOLDER = "__NEARBY_SERVICE_ELEMENT__";
+
+        private const string NEARBY_PERMISSIONS_PLACEHOLDER = "__NEARBY_PERMISSIONS__";
 
         /// <summary>Constant for token replacement</summary>
         private const string APPIDPLACEHOLDER = "__APP_ID__";
@@ -90,13 +80,7 @@ namespace GooglePlayGames.Editor
         private const string WEBCLIENTIDPLACEHOLDER = "__WEB_CLIENTID__";
 
         /// <summary>Constant for token replacement</summary>
-        private const string IOSCLIENTIDPLACEHOLDER = "__IOS_CLIENTID__";
-
-        /// <summary>Constant for token replacement</summary>
-        private const string IOSBUNDLEIDPLACEHOLDER = "__BUNDLEID__";
-
-        /// <summary>Constant for token replacement</summary>
-        private const string TOKENPERMISSIONSHOLDER = "__TOKEN_PERMISSIONS__";
+        private const string PLUGINVERSIONPLACEHOLDER = "__PLUGIN_VERSION__";
 
         /// <summary>Constant for require google plus token replacement</summary>
         private const string REQUIREGOOGLEPLUSPLACEHOLDER = "__REQUIRE_GOOGLE_PLUS__";
@@ -119,11 +103,12 @@ namespace GooglePlayGames.Editor
         private const string GameInfoPath = "Assets/GooglePlayGames/GameInfo.cs";
 
         /// <summary>
-        /// The token permissions to add if needed.
+        /// The manifest path.
         /// </summary>
-        private const string TokenPermissions =
-            "<uses-permission android:name=\"android.permission.GET_ACCOUNTS\"/>\n" +
-            "<uses-permission android:name=\"android.permission.USE_CREDENTIALS\"/>";
+        /// <remarks>The Games SDK requires additional metadata in the AndroidManifest.xml
+        ///     file. </remarks>
+        private const string ManifestPath =
+           "Assets/GooglePlayGames/Plugins/Android/GooglePlayGamesManifest.plugin/AndroidManifest.xml";
 
         /// <summary>
         /// The map of replacements for filling in code templates.  The
@@ -133,14 +118,15 @@ namespace GooglePlayGames.Editor
         private static Dictionary<string, string> replacements =
             new Dictionary<string, string>()
             {
+                // Put this element placeholder first, since it has embedded placeholder
+                {SERVICEID_ELEMENT_PLACEHOLDER,  SERVICEID_ELEMENT_PLACEHOLDER},
                 { SERVICEIDPLACEHOLDER, SERVICEIDKEY },
                 { APPIDPLACEHOLDER, APPIDKEY },
                 { CLASSNAMEPLACEHOLDER, CLASSNAMEKEY },
                 { WEBCLIENTIDPLACEHOLDER, WEBCLIENTIDKEY },
-                { IOSCLIENTIDPLACEHOLDER, IOSCLIENTIDKEY },
-                { IOSBUNDLEIDPLACEHOLDER, IOSBUNDLEIDKEY },
-                { TOKENPERMISSIONSHOLDER, TOKENPERMISSIONKEY },
-                { REQUIREGOOGLEPLUSPLACEHOLDER, REQUIREGOOGLEPLUSKEY }
+                { PLUGINVERSIONPLACEHOLDER, PLUGINVERSIONKEY},
+                // Causes the placeholder to be replaced with overridden value at runtime.
+                {  NEARBY_PERMISSIONS_PLACEHOLDER, NEARBY_PERMISSIONS_PLACEHOLDER}
             };
 
         /// <summary>
@@ -324,25 +310,6 @@ namespace GooglePlayGames.Editor
                 Debug.Log("GameInfo.cs does not exist.  Run Window > Google Play Games > Setup > Android Setup...");
                 return false;
             }
-            #elif (UNITY_IPHONE && !NO_GPGS)
-            doneSetup = GPGSProjectSettings.Instance.GetBool(IOSSETUPDONEKEY, false);
-            // check gameinfo
-            if (File.Exists(GameInfoPath))
-            {
-                string contents = ReadFile(GameInfoPath);
-                if (contents.Contains(IOSCLIENTIDPLACEHOLDER))
-                {
-                    Debug.Log("GameInfo not initialized with Client Id.  " +
-                        "Run Window > Google Play Games > Setup > iOS Setup...");
-                    return false;
-                }
-            }
-            else
-            {
-                Debug.Log("GameInfo.cs does not exist.  Run Window > Google Play Games > Setup > iOS Setup...");
-                return false;
-            }
-
             #endif
 
             return doneSetup;
@@ -452,8 +419,7 @@ namespace GooglePlayGames.Editor
         /// <returns><c>true</c>, if the file exists <c>false</c> otherwise.</returns>
         public static bool AndroidManifestExists()
         {
-            string destFilename = GPGSUtil.SlashesToPlatformSeparator(
-                                      "Assets/Plugins/Android/MainLibProj/AndroidManifest.xml");
+            string destFilename = GPGSUtil.SlashesToPlatformSeparator(ManifestPath);
 
             return File.Exists(destFilename);
         }
@@ -461,11 +427,10 @@ namespace GooglePlayGames.Editor
         /// <summary>
         /// Generates the android manifest.
         /// </summary>
-        /// <param name="needTokenPermissions">If set to <c>true</c> need token permissions.</param>
-        public static void GenerateAndroidManifest(bool needTokenPermissions)
+        public static void GenerateAndroidManifest()
         {
-            string destFilename = GPGSUtil.SlashesToPlatformSeparator(
-                                      "Assets/Plugins/Android/MainLibProj/AndroidManifest.xml");
+
+            string destFilename = GPGSUtil.SlashesToPlatformSeparator(ManifestPath);
 
             // Generate AndroidManifest.xml
             string manifestBody = GPGSUtil.ReadEditorTemplate("template-AndroidManifest");
@@ -473,14 +438,24 @@ namespace GooglePlayGames.Editor
             Dictionary<string, string> overrideValues =
                 new Dictionary<string, string>();
 
-            if (!needTokenPermissions)
+            if (!string.IsNullOrEmpty (GPGSProjectSettings.Instance.Get (SERVICEIDKEY)))
             {
-                overrideValues[TOKENPERMISSIONKEY] = string.Empty;
-                overrideValues[WEBCLIENTIDPLACEHOLDER] = string.Empty;
+                overrideValues [NEARBY_PERMISSIONS_PLACEHOLDER] =
+                    "        <!-- Required for Nearby Connections -->\n" +
+                    "        <uses-permission android:name=\"android.permission.BLUETOOTH\" />\n" +
+                    "        <uses-permission android:name=\"android.permission.BLUETOOTH_ADMIN\" />\n" +
+                    "        <uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\" />\n" +
+                    "        <uses-permission android:name=\"android.permission.CHANGE_WIFI_STATE\" />\n" +
+                    "        <uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\" />\n";
+                overrideValues [SERVICEID_ELEMENT_PLACEHOLDER] =
+                    "             <!-- Required for Nearby Connections API -->\n" +
+                    "             <meta-data android:name=\"com.google.android.gms.nearby.connection.SERVICE_ID\"\n" +
+                    "                  android:value=\"__NEARBY_SERVICE_ID__\" />\n";
             }
             else
             {
-                overrideValues[TOKENPERMISSIONKEY] = TokenPermissions;
+                overrideValues [NEARBY_PERMISSIONS_PLACEHOLDER] = "";
+                overrideValues [SERVICEID_ELEMENT_PLACEHOLDER] = "";
             }
 
             foreach (KeyValuePair<string, string> ent in replacements)
@@ -641,4 +616,3 @@ namespace GooglePlayGames.Editor
         }
     }
 }
-#endif

@@ -73,15 +73,26 @@ public class BuyFish : BaseWindow {
 
     public void BuyClick(int value)
     {
-        if (SUPPORTED)
-            switch (value)
-            {
-                case 1: Soomla.Store.StoreInventory.BuyItem(SoomlaAssets.TESTID_ITEM_ID, Guid.NewGuid().ToString()); break;
-                case 2: Soomla.Store.StoreInventory.BuyItem(SoomlaAssets.FISH_2_ITEM_ID, Guid.NewGuid().ToString() ); break;
-                case 3: Soomla.Store.StoreInventory.BuyItem(SoomlaAssets.FISH_3_ITEM_ID, Guid.NewGuid().ToString()); break;
-                case 4: Soomla.Store.StoreInventory.BuyItem(SoomlaAssets.FISH_4_ITEM_ID, Guid.NewGuid().ToString()); break;
-            }
-        else AndroidNativeUtils.ShowMsg("Sorry, billing is't supported on your device. Try update the PlayMarket.");
+		if (SUPPORTED)
+			switch (value) {
+			case 1:
+				Soomla.Store.StoreInventory.BuyItem (SoomlaAssets.TESTID_ITEM_ID, Guid.NewGuid ().ToString ());
+				break;
+			case 2:
+				Soomla.Store.StoreInventory.BuyItem (SoomlaAssets.FISH_2_ITEM_ID, Guid.NewGuid ().ToString ());
+				break;
+			case 3:
+				Soomla.Store.StoreInventory.BuyItem (SoomlaAssets.FISH_3_ITEM_ID, Guid.NewGuid ().ToString ());
+				break;
+			case 4:
+				Soomla.Store.StoreInventory.BuyItem (SoomlaAssets.FISH_4_ITEM_ID, Guid.NewGuid ().ToString ());
+				break;
+			}
+		else {
+			#if UNITY_ANDROID
+			AndroidNativeUtils.ShowMsg ("Sorry, billing is't supported on your device. Try update the PlayMarket.");
+			#endif
+		}
 
     }
 
@@ -153,7 +164,9 @@ public class BuyFish : BaseWindow {
         }
         else
         {
+			#if UNITY_ANDROID
             AndroidNativeUtils.ShowMsg(LanguageManager.GetText("NoWeb"));
+			#endif
         }
     }
 

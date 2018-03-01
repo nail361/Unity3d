@@ -30,7 +30,7 @@ public class PlayerMenu : MonoBehaviour {
         else
         {
             transform.position = GameObject.Find("Stage_" + GameManager.instance.cur_stage.ToString() + "/Level_" + GameManager.instance.cur_level.ToString()).
-                transform.FindChild("point_1").position;
+                transform.Find("point_1").position;
         }
 
         cur_level = GameManager.instance.cur_level;
@@ -79,7 +79,7 @@ public class PlayerMenu : MonoBehaviour {
                 m_camera.FindPlayer(transform.position.y);
             }
 
-            point = cur_levelGO.transform.FindChild("point_2");
+            point = cur_levelGO.transform.Find("point_2");
 
             scale = 0.0f;
             start = transform.position;
@@ -101,7 +101,7 @@ public class PlayerMenu : MonoBehaviour {
                 m_camera.FindPlayer(transform.position.y);
             }
 
-            point = cur_levelGO.transform.FindChild("point_1");
+            point = cur_levelGO.transform.Find("point_1");
 
             scale = 0.0f;
             start = transform.position;

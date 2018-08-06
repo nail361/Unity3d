@@ -164,9 +164,9 @@ public class BuyFish : BaseWindow {
         }
         else
         {
-			#if UNITY_ANDROID
+#if UNITY_ANDROID
             AndroidNativeUtils.ShowMsg(LanguageManager.GetText("NoWeb"));
-			#endif
+#endif
         }
     }
 

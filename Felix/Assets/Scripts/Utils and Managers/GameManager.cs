@@ -347,7 +347,9 @@ public class GameManager : MonoBehaviour {
             if (star_count >= 2 && levels[cur_stage][cur_level][cur_mode] < 2) add_level_fish += 5;
             if (star_count == 3) {
                 add_level_fish += 12;
+#if UNITY_ANDROID
                 if (cur_stage == 0) CheckFloorAch();
+#endif
             }
 
             levels[cur_stage][cur_level][cur_mode] = star_count;

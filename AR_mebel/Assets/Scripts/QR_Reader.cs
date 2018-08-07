@@ -1,107 +1,162 @@
-﻿using UnityEngine;
-using System;
+﻿using System.Threading;
 using System.Collections;
 
-using Vuforia;
+using UnityEngine;
 
 using ZXing;
 using ZXing.QrCode;
-using ZXing.Common;
 
-public class QR_Reader: MonoBehaviour
+public class QR_Reader : MonoBehaviour
 {
-    private bool cameraInitialized;
+    public Texture2D encoded;
 
-    private BarcodeReader barCodeReader;
+    private WebCamTexture camTexture;
+    private Thread qrThread;
+
+    private Color32[] c;
+    private int W, H;
+
+    private Rect screenRect;
+
+    private bool isQuit;
+
+    public string LastResult;
+    private bool shouldEncodeNow;
+
+    private string QR_result = "";
+
+    void OnGUI()
+    {
+        GUI.DrawTexture(screenRect, camTexture, ScaleMode.ScaleToFit);
+    }
+
+    void OnEnable()
+    {
+        if (camTexture != null)
+        {
+            camTexture.Play();
+            W = camTexture.width;
+            H = camTexture.height;
+        }
+    }
+
+    void OnDisable()
+    {
+        if (camTexture != null)
+        {
+            camTexture.Pause();
+        }
+    }
+
+    void OnDestroy()
+    {
+        qrThread.Abort();
+        camTexture.Stop();
+    }
+
+    void OnApplicationQuit()
+    {
+        isQuit = true;
+    }
 
     void Start()
     {
-        barCodeReader = new BarcodeReader();
-        StartCoroutine("InitializeCamera");
+        encoded = new Texture2D(256, 256);
+        LastResult = "http://www.google.com";
+        shouldEncodeNow = true;
+
+        screenRect = new Rect(0, 0, Screen.width, Screen.height);
+
+        camTexture = new WebCamTexture();
+        camTexture.requestedHeight = Screen.height;
+        camTexture.requestedWidth = Screen.width;
+        OnEnable();
+
+        qrThread = new Thread(DecodeQR);
+        qrThread.Start();
     }
 
-    private IEnumerator InitializeCamera()
+    void Update()
     {
-        // Waiting a little seem to avoid the Vuforia crashes.
-        yield return new WaitForSeconds(1.25f);
-
-        var isFrameFormatSet = CameraDevice.Instance.SetFrameFormat(Image.PIXEL_FORMAT.RGB888, true);
-        Debug.Log(String.Format("FormatSet : {0}", isFrameFormatSet));
-
-        // Force autofocus.
-        var isAutoFocus = CameraDevice.Instance.SetFocusMode(CameraDevice.FocusMode.FOCUS_MODE_CONTINUOUSAUTO);
-        if (!isAutoFocus)
+        if (c == null)
         {
-            CameraDevice.Instance.SetFocusMode(CameraDevice.FocusMode.FOCUS_MODE_NORMAL);
+            c = camTexture.GetPixels32();
         }
-        Debug.Log(String.Format("AutoFocus : {0}", isAutoFocus));
-        cameraInitialized = true;
-        StopCoroutine("InitializeCamera");
+
+        var textForEncoding = LastResult;
+        if (shouldEncodeNow &&
+            textForEncoding != null)
+        {
+            var color32 = Encode(textForEncoding, encoded.width, encoded.height);
+            encoded.SetPixels32(color32);
+            encoded.Apply();
+            shouldEncodeNow = false;
+        }
+
+        if (CheckUrl())
+        {
+            gameObject.GetComponent<ModelLoader>().LoadModel(QR_result);
+        }
     }
 
-    private void Update()
+    private bool CheckUrl()
     {
-        if (cameraInitialized)
+        bool correct = false;
+
+        if (QR_result.Length > 0)
         {
+            //Проверка урла на наш сервер.
+            correct = true;
+        }
+
+        return correct;
+    }
+
+    void DecodeQR()
+    {
+        var barcodeReader = new BarcodeReader();
+        barcodeReader.AutoRotate = false;
+        barcodeReader.Options.TryHarder = false;
+
+        while (true)
+        {
+            if (isQuit)
+                break;
+
             try
             {
-                var cameraFeed = CameraDevice.Instance.GetCameraImage(Image.PIXEL_FORMAT.RGB888);
-                if (cameraFeed == null)
+                // decode the current frame
+                var result = barcodeReader.Decode(c, W, H);
+                if (result != null)
                 {
-                    return;
+                    LastResult = result.Text;
+                    shouldEncodeNow = true;
+                    isQuit = true;
+                    print(result.Text);
+                    QR_result = result.Text;
                 }
-                
-                var data = barCodeReader.Decode(cameraFeed.Pixels, cameraFeed.BufferWidth, cameraFeed.BufferHeight, RGBLuminanceSource.BitmapFormat.RGB24);
-                if (data != null)
-                {
-                    // QRCode detected.
-                    cameraInitialized = false;
-                    Debug.Log(data.Text);
-                    LoadModel();
-                }
-                else
-                {
-                    Debug.Log("No QR code detected !");
-                }
+
+                // Sleep a little bit and set the signal to get the next frame
+                Thread.Sleep(200);
+                c = null;
             }
-            catch (Exception e)
+            catch
             {
-                Debug.LogError(e.Message);
             }
         }
     }
 
-    private void LoadModel()
+    private static Color32[] Encode(string textForEncoding, int width, int height)
     {
-        StartCoroutine("DownloadAssetBundle");
-    }
-
-    public IEnumerator DownloadAssetBundle()
-    {
-        while (!Caching.ready)
+        var writer = new BarcodeWriter
         {
-            OnBundleLoaded();
-            yield return null;
-        }
-
-        using (WWW www = WWW.LoadFromCacheOrDownload("file://" + Application.dataPath + "/AssetBundles/wordsbank", 0))
-        {
-            yield return www;
-            if (www.error != null) throw new Exception("WWW download:" + www.error + " url:" + www.url);
-
-            AssetBundle assetBundle = www.assetBundle;
-
-            AssetBundleRequest request = assetBundle.LoadAssetAsync("model_01.pref", typeof(GameObject));
-            yield return request;
-            GameObject model = request.asset as GameObject;
-            OnBundleLoaded();
-            assetBundle.Unload(false);
-        }
+            Format = BarcodeFormat.QR_CODE,
+            Options = new QrCodeEncodingOptions
+            {
+                Height = height,
+                Width = width
+            }
+        };
+        return writer.Write(textForEncoding);
     }
-
-    private void OnBundleLoaded()
-    {
-        
-    }
-
 }

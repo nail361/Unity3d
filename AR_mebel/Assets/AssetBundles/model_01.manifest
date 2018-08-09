@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 2606229694
+CRC: 460538862
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 4790d70ef7db3476eca0fa7e6d0ca89b
+    Hash: a09db902a23ad20a2e53145bdbbdcf1b
   TypeTreeHash:
     serializedVersion: 2
     Hash: f46064bbd1a61c5bbab74b84d62a30b0
@@ -26,5 +26,5 @@ ClassTypes:
 - Class: 65
   Script: {instanceID: 0}
 Assets:
-- Assets/Resources/Models/Cube.prefab
+- Assets/Resources/Models/Model_01.prefab
 Dependencies: []

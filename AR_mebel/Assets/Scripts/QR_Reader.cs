@@ -2,12 +2,18 @@
 using System.Collections;
 
 using UnityEngine;
+using UnityEngine.UI;
 
 using ZXing;
 using ZXing.QrCode;
 
 public class QR_Reader : MonoBehaviour
 {
+    [SerializeField]
+    private Text warningTextField;
+    [SerializeField]
+    public RawImage rawimage;
+
     public Texture2D encoded;
 
     private WebCamTexture camTexture;
@@ -25,10 +31,12 @@ public class QR_Reader : MonoBehaviour
 
     private string QR_result = "";
 
+    /*
     void OnGUI()
     {
         GUI.DrawTexture(screenRect, camTexture, ScaleMode.ScaleToFit);
     }
+    */
 
     void OnEnable()
     {
@@ -62,14 +70,14 @@ public class QR_Reader : MonoBehaviour
     void Start()
     {
         encoded = new Texture2D(256, 256);
-        LastResult = "http://www.google.com";
+        LastResult = "www.google.ru";
         shouldEncodeNow = true;
 
         screenRect = new Rect(0, 0, Screen.width, Screen.height);
 
-        camTexture = new WebCamTexture();
-        camTexture.requestedHeight = Screen.height;
-        camTexture.requestedWidth = Screen.width;
+        camTexture = new WebCamTexture(Screen.height, Screen.width, 30);
+        rawimage.texture = camTexture;
+        rawimage.material.mainTexture = camTexture;
         OnEnable();
 
         qrThread = new Thread(DecodeQR);
@@ -90,12 +98,13 @@ public class QR_Reader : MonoBehaviour
             var color32 = Encode(textForEncoding, encoded.width, encoded.height);
             encoded.SetPixels32(color32);
             encoded.Apply();
-            shouldEncodeNow = false;
-        }
-
-        if (CheckUrl())
-        {
-            gameObject.GetComponent<ModelLoader>().LoadModel(QR_result);
+            
+            if (CheckUrl())
+            {
+                rawimage.texture = null;
+                shouldEncodeNow = false;
+                gameObject.GetComponent<ModelLoader>().LoadModel(QR_result);
+            }
         }
     }
 
@@ -106,7 +115,15 @@ public class QR_Reader : MonoBehaviour
         if (QR_result.Length > 0)
         {
             //Проверка урла на наш сервер.
-            correct = true;
+            if (true) {
+                warningTextField.text = "";
+                correct = true;
+            }
+            else
+            {
+                warningTextField.text = "QR код не принадлежит нашей системе!";
+                StartCoroutine(HideWarning());
+            }
         }
 
         return correct;
@@ -158,5 +175,11 @@ public class QR_Reader : MonoBehaviour
             }
         };
         return writer.Write(textForEncoding);
+    }
+
+    private IEnumerator HideWarning()
+    {
+        yield return new WaitForSeconds(2);
+        warningTextField.text = "";
     }
 }

@@ -319,7 +319,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 287159796}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 1009501192, guid: 1e108ae5f2133934f948edded555f03e, type: 3}
+  m_Script: {fileID: 11500000, guid: 5a917f0af64a6423093132dab321c15f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!4 &287159799
@@ -336,65 +336,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &433381882
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 450527233}
-    m_Modifications:
-    - target: {fileID: 4746534474722228, guid: 2af55a4c27bcfee4da206dfad8a47c5f, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4746534474722228, guid: 2af55a4c27bcfee4da206dfad8a47c5f, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4746534474722228, guid: 2af55a4c27bcfee4da206dfad8a47c5f, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4746534474722228, guid: 2af55a4c27bcfee4da206dfad8a47c5f, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4746534474722228, guid: 2af55a4c27bcfee4da206dfad8a47c5f, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4746534474722228, guid: 2af55a4c27bcfee4da206dfad8a47c5f, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4746534474722228, guid: 2af55a4c27bcfee4da206dfad8a47c5f, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4746534474722228, guid: 2af55a4c27bcfee4da206dfad8a47c5f, type: 2}
-      propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4746534474722228, guid: 2af55a4c27bcfee4da206dfad8a47c5f, type: 2}
-      propertyPath: m_LocalScale.x
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4746534474722228, guid: 2af55a4c27bcfee4da206dfad8a47c5f, type: 2}
-      propertyPath: m_LocalScale.y
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4746534474722228, guid: 2af55a4c27bcfee4da206dfad8a47c5f, type: 2}
-      propertyPath: m_LocalScale.z
-      value: 0.1
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: 2af55a4c27bcfee4da206dfad8a47c5f, type: 2}
-  m_IsPrefabParent: 0
---- !u!4 &433381883 stripped
-Transform:
-  m_PrefabParentObject: {fileID: 4746534474722228, guid: 2af55a4c27bcfee4da206dfad8a47c5f,
-    type: 2}
-  m_PrefabInternal: {fileID: 433381882}
 --- !u!1 &450527232
 GameObject:
   m_ObjectHideFlags: 0
@@ -403,8 +344,9 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 450527233}
+  - component: {fileID: 450527234}
   m_Layer: 0
-  m_Name: Model
+  m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -419,11 +361,21 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 433381883}
+  m_Children: []
   m_Father: {fileID: 287159799}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &450527234
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 450527232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb1306e3d51347c4cb8ab71ef1db2b5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &960384020
 GameObject:
   m_ObjectHideFlags: 0
@@ -454,7 +406,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AnchorStage: {fileID: 287159797}
-  DuplicateStage: 1
+  DuplicateStage: 0
   OnContentPlaced:
     m_PersistentCalls:
       m_Calls: []

@@ -39,7 +39,7 @@ public class ModelLoader : MonoBehaviour {
             yield return null;
         }
 
-        using (WWW www = WWW.LoadFromCacheOrDownload("file://" + Application.dataPath + "/AssetBundles/model_01", 0))
+        using (WWW www = WWW.LoadFromCacheOrDownload(model_url, 0))
         {
             loadingProgress.value = 100 * www.progress;
             yield return www;

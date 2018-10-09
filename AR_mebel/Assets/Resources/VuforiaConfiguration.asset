@@ -16,9 +16,9 @@ MonoBehaviour:
     ufoLicenseKey: QVdLdjJrLy8vLy8vQUFBQUtCV2J2U2tKTVV0SWk0YStKbVQ2N2N1TVM0bHRPNjFoWEprWERjWnV5UU9VV3pLcUVqMmJqcVoyYjJ3N1E5K2VNcjZGSkxtcEVxME5YKzJWZ2JPQVZLMXkzeEt1RHdqNHBJc2lEdDF4Q3M3Zi85V0tBZm0yaENlcDExV0l0YkdrbU9SQkpJaVowVjN1Y3QzaXFEcE9qQW94RmZ6TmMwakh1TUlXWG9OZXNiNVNFWWJoK2hKcWJPbmlvZW1zKzFpMTZTTHRCQmhPVk5XeFVHWEI1RVBkWnI4RnpwT0lENURJeXQzZXdHU25NSnNRVVB0anMzOGRoVDNaSVE3VHM2Mkl2elIzTm1NWlJyK0FBWk02Wk1yU2ZrRnpRaGpvdEFhQnNBZ0tyS29jTDBoL0VFaXA1V2JCVGtwbW83c3BwMnVBbWFUSkdCSnh0Q1ptZ0k0QU50T0hvSWc2KzBMUmRnU2pwWGlmamdiZDJYN2k=
     delayedInitialization: 0
     cameraDeviceModeSetting: -1
-    maxSimultaneousImageTargets: 1
-    maxSimultaneousObjectTargets: 1
-    useDelayedLoadingObjectTargets: 0
+    maxSimultaneousImageTargets: 2
+    maxSimultaneousObjectTargets: 2
+    useDelayedLoadingObjectTargets: 1
     cameraDirection: 1
     mirrorVideoBackground: 0
     version: 7.2.24
@@ -53,7 +53,7 @@ MonoBehaviour:
   deviceTracker:
     autoInitTracker: 0
     autoStartTracker: 0
-    trackingMode: 0
+    trackingMode: 1
     posePrediction: 0
     modelCorrectionMode: 0
     modelTransformEnabled: 0

@@ -25,7 +25,6 @@ public class ProductPlacement : MonoBehaviour
 
 
     #region PRIVATE_MEMBERS
-    MeshRenderer chairRenderer;
 
     float m_PlacementAugmentationScale;
     Vector3 ProductScaleVector;
@@ -35,7 +34,6 @@ public class ProductPlacement : MonoBehaviour
     #region MONOBEHAVIOUR_METHODS
     void Start()
     {
-        chairRenderer = GetComponent<MeshRenderer>();
                 
         m_PlacementAugmentationScale = VuforiaRuntimeUtilities.IsPlayMode() ? 0.1f : ProductSize;
 

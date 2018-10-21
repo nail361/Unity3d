@@ -22,6 +22,8 @@ public class UDTEventHandler : MonoBehaviour, IUserDefinedTargetEventHandler
     /// </summary>
     public ImageTargetBehaviour ImageTargetTemplate;
 
+    public GameObject TargetBuilderUI;
+
     public int LastTargetIndex
     {
         get { return (m_TargetCounter - 1) % MAX_TARGETS; }
@@ -30,9 +32,9 @@ public class UDTEventHandler : MonoBehaviour, IUserDefinedTargetEventHandler
 
 
     #region PRIVATE_MEMBERS
-    const int MAX_TARGETS = 5;
+    const int MAX_TARGETS = 1;
     UserDefinedTargetBuildingBehaviour m_TargetBuildingBehaviour;
-    QualityDialog m_QualityDialog;
+    GameObject m_QualityDialog;
     ObjectTracker m_ObjectTracker;
     FrameQualityMeter m_FrameQualityMeter;
 
@@ -59,7 +61,7 @@ public class UDTEventHandler : MonoBehaviour, IUserDefinedTargetEventHandler
         }
 
         m_FrameQualityMeter = FindObjectOfType<FrameQualityMeter>();
-        m_QualityDialog = FindObjectOfType<QualityDialog>();
+        m_QualityDialog = GameObject.FindGameObjectWithTag("QualityDialog");
 
         if (m_QualityDialog)
         {
@@ -152,8 +154,7 @@ public class UDTEventHandler : MonoBehaviour, IUserDefinedTargetEventHandler
     /// </summary>
     public void BuildNewTarget()
     {
-        if (m_FrameQuality == ImageTargetBuilder.FrameQuality.FRAME_QUALITY_MEDIUM ||
-            m_FrameQuality == ImageTargetBuilder.FrameQuality.FRAME_QUALITY_HIGH)
+        if (m_FrameQuality == ImageTargetBuilder.FrameQuality.FRAME_QUALITY_HIGH)
         {
             // create the name of the next target.
             // the TrackableName of the original, linked ImageTargetBehaviour is extended with a continuous number to ensure unique names
@@ -161,6 +162,8 @@ public class UDTEventHandler : MonoBehaviour, IUserDefinedTargetEventHandler
 
             // generate a new target:
             m_TargetBuildingBehaviour.BuildNewTarget(targetName, ImageTargetTemplate.GetSize().x);
+
+            TargetBuilderUI.SetActive(false);
         }
         else
         {

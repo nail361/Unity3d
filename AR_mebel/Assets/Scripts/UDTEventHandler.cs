@@ -132,11 +132,11 @@ public class UDTEventHandler : MonoBehaviour, IUserDefinedTargetEventHandler
         }
 
         // Get predefined trackable and instantiate it
-        ImageTargetBehaviour imageTargetCopy = Instantiate(ImageTargetTemplate);
-        imageTargetCopy.gameObject.name = "UserDefinedTarget-" + m_TargetCounter;
+        //ImageTargetBehaviour imageTargetCopy = Instantiate(ImageTargetTemplate);
+        //imageTargetCopy.gameObject.name = "UserDefinedTarget-" + m_TargetCounter;
 
         // Add the duplicated trackable to the data set and activate it
-        m_UDT_DataSet.CreateTrackable(trackableSource, imageTargetCopy.gameObject);
+        m_UDT_DataSet.CreateTrackable(trackableSource, ImageTargetTemplate.gameObject);
 
         // Activate the dataset again
         m_ObjectTracker.ActivateDataSet(m_UDT_DataSet);

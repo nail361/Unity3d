@@ -17,6 +17,7 @@ public class ProductPlacement : MonoBehaviour
     [Header("Placement Controls")]
     public GameObject m_TranslationIndicator;
     public GameObject m_RotationIndicator;
+    private TouchHandler touchHandler;
 
     [Header("Placement Augmentation Size Range")]
     [Range(0.1f, 2.0f)]
@@ -35,7 +36,7 @@ public class ProductPlacement : MonoBehaviour
     void Start()
     {
                 
-        m_PlacementAugmentationScale = VuforiaRuntimeUtilities.IsPlayMode() ? 0.1f : ProductSize;
+        m_PlacementAugmentationScale = ProductSize;
 
         ProductScaleVector =
             new Vector3(m_PlacementAugmentationScale,
@@ -43,6 +44,11 @@ public class ProductPlacement : MonoBehaviour
                         m_PlacementAugmentationScale);
 
         gameObject.transform.localScale = ProductScaleVector;
+
+        touchHandler = gameObject.GetComponent<TouchHandler>();
+        touchHandler.m_AugmentationObject = gameObject.transform.GetChild(2);
+        m_TranslationIndicator.transform.SetParent(touchHandler.m_AugmentationObject.transform);
+        m_RotationIndicator.transform.SetParent(touchHandler.m_AugmentationObject.transform);
     }
 
 

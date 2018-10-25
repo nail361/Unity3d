@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 460538862
+CRC: 3982384066
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: a09db902a23ad20a2e53145bdbbdcf1b
+    Hash: fe46d430f422e68b021257c284b33f9e
   TypeTreeHash:
     serializedVersion: 2
-    Hash: f46064bbd1a61c5bbab74b84d62a30b0
+    Hash: b2914b3b97ecc9b29cb39f9134b87313
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -17,6 +17,8 @@ ClassTypes:
   Script: {instanceID: 0}
 - Class: 23
   Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
 - Class: 33
   Script: {instanceID: 0}
 - Class: 43
@@ -26,5 +28,5 @@ ClassTypes:
 - Class: 65
   Script: {instanceID: 0}
 Assets:
-- Assets/Resources/Models/Model_01.prefab
+- Assets/Resources/Models/divan/sofa victor soft line.prefab
 Dependencies: []

@@ -17,6 +17,7 @@ public class ProductPlacement : MonoBehaviour
     [Header("Placement Controls")]
     public GameObject m_TranslationIndicator;
     public GameObject m_RotationIndicator;
+    public Transform Floor;
     private TouchHandler touchHandler;
 
     [Header("Placement Augmentation Size Range")]
@@ -29,13 +30,19 @@ public class ProductPlacement : MonoBehaviour
 
     float m_PlacementAugmentationScale;
     Vector3 ProductScaleVector;
+
+    Camera mainCamera;
+    Ray cameraToPlaneRay;
+    RaycastHit cameraToPlaneHit;
+
+    const string EmulatorGroundPlane = "Emulator Ground Plane";
+
     #endregion // PRIVATE_MEMBERS
 
 
     #region MONOBEHAVIOUR_METHODS
     void Start()
     {
-                
         m_PlacementAugmentationScale = ProductSize;
 
         ProductScaleVector =
@@ -47,16 +54,60 @@ public class ProductPlacement : MonoBehaviour
 
         touchHandler = gameObject.GetComponent<TouchHandler>();
         touchHandler.m_AugmentationObject = gameObject.transform.GetChild(2);
+        GetComponent<Player>().modelTransform = gameObject.transform.GetChild(2);
+
         m_TranslationIndicator.transform.SetParent(touchHandler.m_AugmentationObject.transform);
         m_RotationIndicator.transform.SetParent(touchHandler.m_AugmentationObject.transform);
+
+        mainCamera = Camera.main;
     }
 
 
     void Update()
     {
+        /*
+        if (PlaneManager.planeMode == PlaneManager.PlaneMode.PLACEMENT)
+        {
+            shadowRenderer.enabled = chairRenderer.enabled = (IsPlaced || PlaneManager.GroundPlaneHitReceived);
+            EnablePreviewModeTransparency(!IsPlaced);
+            if (!IsPlaced)
+                UtilityHelper.RotateTowardCamera(gameObject);
+        }
+        else
+        {
+            shadowRenderer.enabled = chairRenderer.enabled = IsPlaced;
+        }
+        */
+        /*
+        if (IsPlaced)
+        {
+            m_RotationIndicator.SetActive(Input.touchCount == 2);
+
+            m_TranslationIndicator.SetActive(
+                (TouchHandler.IsSingleFingerDragging || TouchHandler.IsSingleFingerStationary));
+
+            if (TouchHandler.IsSingleFingerDragging || (VuforiaRuntimeUtilities.IsPlayMode() && Input.GetMouseButton(0)))
+            {
+               cameraToPlaneRay = mainCamera.ScreenPointToRay(Input.mousePosition);
+
+                if (Physics.Raycast(cameraToPlaneRay, out cameraToPlaneHit))
+                {
+                    if (cameraToPlaneHit.collider.gameObject.name ==
+                        (VuforiaRuntimeUtilities.IsPlayMode() ? EmulatorGroundPlane : Floor.name))
+                    {
+                        gameObject.PositionAt(cameraToPlaneHit.point);
+                    }
+                }
+            }
+        }
+        else
+        {
+            m_RotationIndicator.SetActive(false);
+            m_TranslationIndicator.SetActive(false);
+        }
+        */
         m_RotationIndicator.SetActive(Input.touchCount == 2);
-        m_TranslationIndicator.SetActive(
-                TouchHandler.IsSingleFingerDragging || TouchHandler.IsSingleFingerStationary);
+        m_TranslationIndicator.SetActive(TouchHandler.IsSingleFingerDragging || TouchHandler.IsSingleFingerStationary);
     }
     #endregion // MONOBEHAVIOUR_METHODS
 

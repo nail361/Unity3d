@@ -5,13 +5,11 @@ using UnityEngine;
 public class Player : MonoBehaviour {
 
 	private bool holding;
-    private Transform modelTransform;
+    public Transform modelTransform;
  
     void Start()
     {
         holding = false;
-
-        modelTransform = transform.GetChild(0);
     }
  
     void Update()

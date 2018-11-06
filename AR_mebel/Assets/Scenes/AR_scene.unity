@@ -678,7 +678,6 @@ MonoBehaviour:
   m_TranslationIndicator: {fileID: 524326544}
   m_RotationIndicator: {fileID: 1521548461}
   Floor: {fileID: 0}
-  ProductSize: 0.3
 --- !u!1 &452893801
 GameObject:
   m_ObjectHideFlags: 0
@@ -2987,7 +2986,7 @@ Transform:
   m_GameObject: {fileID: 1481055193}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1322356182}
   m_RootOrder: 1
@@ -3073,8 +3072,8 @@ MonoBehaviour:
   mDataSetPath: Vuforia/VuforiaMars_Images.xml
   mAspectRatio: 1
   mImageTargetType: 1
-  mWidth: 0.2
-  mHeight: 0.2
+  mWidth: 1
+  mHeight: 1
 --- !u!1 &1515676977
 GameObject:
   m_ObjectHideFlags: 0

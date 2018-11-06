@@ -20,16 +20,10 @@ public class ProductPlacement : MonoBehaviour
     public Transform Floor;
     private TouchHandler touchHandler;
 
-    [Header("Placement Augmentation Size Range")]
-    [Range(0.1f, 2.0f)]
-    public float ProductSize = 0.65f;
     #endregion // PUBLIC_MEMBERS
 
 
     #region PRIVATE_MEMBERS
-
-    float m_PlacementAugmentationScale;
-    Vector3 ProductScaleVector;
 
     Camera mainCamera;
     Ray cameraToPlaneRay;
@@ -43,21 +37,16 @@ public class ProductPlacement : MonoBehaviour
     #region MONOBEHAVIOUR_METHODS
     void Start()
     {
-        m_PlacementAugmentationScale = ProductSize;
-
-        ProductScaleVector =
-            new Vector3(m_PlacementAugmentationScale,
-                        m_PlacementAugmentationScale,
-                        m_PlacementAugmentationScale);
-
-        gameObject.transform.localScale = ProductScaleVector;
-
         touchHandler = gameObject.GetComponent<TouchHandler>();
-        touchHandler.m_AugmentationObject = gameObject.transform.GetChild(2);
-        GetComponent<Player>().modelTransform = gameObject.transform.GetChild(2);
+        Transform model = gameObject.transform.GetChild(2);
+        touchHandler.m_AugmentationObject = model;
+        GetComponent<Player>().modelTransform = model;
 
-        m_TranslationIndicator.transform.SetParent(touchHandler.m_AugmentationObject.transform);
-        m_RotationIndicator.transform.SetParent(touchHandler.m_AugmentationObject.transform);
+        m_TranslationIndicator.transform.SetParent(model, true);
+        m_RotationIndicator.transform.SetParent(model, true);
+
+        m_TranslationIndicator.transform.localScale = model.gameObject.GetComponent<Renderer>().bounds.size + new Vector3(0.2f,0.0f,0.2f);
+        m_RotationIndicator.transform.localScale = model.gameObject.GetComponent<Renderer>().bounds.size + new Vector3(0.2f, 0.0f, 0.2f);
 
         mainCamera = Camera.main;
     }
@@ -117,7 +106,6 @@ public class ProductPlacement : MonoBehaviour
     {
         transform.position = Vector3.zero;
         transform.localEulerAngles = Vector3.zero;
-        transform.localScale = ProductScaleVector;
     }
 
     public void SetProductAnchor(Transform transform)

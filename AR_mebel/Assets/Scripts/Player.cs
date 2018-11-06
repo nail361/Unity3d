@@ -4,80 +4,49 @@ using UnityEngine;
 
 public class Player : MonoBehaviour {
 
-	private bool holding;
     public Transform modelTransform;
- 
-    void Start()
-    {
-        holding = false;
-    }
- 
+
+    private float dist;
+    private bool dragging = false;
+    private Vector3 offset;
+    private Transform toDrag;
+
     void Update()
     {
- 
-        if (holding)
+        Vector3 v3;
+
+        if (Input.touchCount != 1)
         {
-            Move();
+            dragging = false;
+            return;
         }
 
-#if UNITY_EDITOR
-        if (Input.GetMouseButtonDown(0))
+        Touch touch = Input.touches[0];
+        Vector3 pos = touch.position;
+
+        if (touch.phase == TouchPhase.Began)
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, 100f))
+            Ray ray = Camera.main.ScreenPointToRay(pos);
+            if (Physics.Raycast(ray, out hit) && (hit.collider.name == modelTransform.name))
             {
-                if (hit.transform == modelTransform)
-                {
-                    holding = true;
-                }
+                toDrag = hit.transform;
+                dist = hit.transform.position.z - Camera.main.transform.position.z;
+                v3 = new Vector3(pos.x, pos.y, dist);
+                v3 = Camera.main.ScreenToWorldPoint(v3);
+                offset = toDrag.position - v3;
+                dragging = true;
             }
         }
-        else if (Input.GetMouseButtonUp(0)) {
-            holding = false;
-        }
-#else
-        // One finger
-        if (Input.touchCount == 1)
+        if (dragging && touch.phase == TouchPhase.Moved)
         {
-         
-            // Tap on Object
-            if (Input.GetTouch(0).phase == TouchPhase.Began)
-            {
-                Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
-                RaycastHit hit;
- 
-                if (Physics.Raycast(ray, out hit, 100f))
-                {
-                    if (hit.transform == modelTransform)
-                    {
-                        holding = true;
-                    }
-                }
-            }
- 
-            // Release
-            if (Input.GetTouch(0).phase == TouchPhase.Ended)
-            {
-                holding = false;
-            }
+            v3 = new Vector3(Input.mousePosition.x, Input.mousePosition.y, dist);
+            v3 = Camera.main.ScreenToWorldPoint(v3);
+            toDrag.position = v3 + offset;
         }
-#endif
-    }
-
-    void Move()
-    {
-        RaycastHit hit;
-#if UNITY_EDITOR
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-#else
-        Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
-#endif
-        if (Physics.Raycast(ray, out hit, 100.0f))
+        if (dragging && (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled))
         {
-            transform.position = new Vector3(hit.point.x,
-                                             transform.position.y,
-                                             hit.point.z);
+            dragging = false;
         }
     }
 }

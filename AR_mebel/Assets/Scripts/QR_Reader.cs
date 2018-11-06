@@ -60,7 +60,7 @@ public class QR_Reader : MonoBehaviour
     {
         encoded = new Texture2D(256, 256);
 
-        camTexture = new WebCamTexture(300, 300, 30);
+        camTexture = new WebCamTexture(640, 480, 30);
         rawimage.texture = camTexture;
         rawimage.material.mainTexture = camTexture;
         OnEnable();

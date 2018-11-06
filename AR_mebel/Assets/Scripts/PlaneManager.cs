@@ -229,7 +229,7 @@ public class PlaneManager : MonoBehaviour
     void ChangeToCustomTarget()
     {
         DeviceTrackerARController.Instance.FusionProvider = FusionProviderType.OPTIMIZE_MODEL_TARGETS_AND_SMART_TERRAIN;
-        Player.transform.parent = TargetPlace.transform;
+        Player.transform.SetParent(TargetPlace.transform, true);
         CustomTarget.SetActive(true);
         TargetBuilderUI.SetActive(true);
         Destroy(gameObject, 0.1f);

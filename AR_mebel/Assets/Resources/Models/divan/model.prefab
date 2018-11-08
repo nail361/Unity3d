@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 4461079020907362}
   - component: {fileID: 65770199350852760}
   m_Layer: 0
-  m_Name: sofa victor soft line
+  m_Name: model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

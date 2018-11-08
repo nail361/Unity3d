@@ -42,8 +42,6 @@ public class PlaneManager : MonoBehaviour
     SmartTerrain m_SmartTerrain;
     PositionalDeviceTracker m_PositionalDeviceTracker;
     ContentPositioningBehaviour m_ContentPositioningBehaviour;
-    TouchHandler m_TouchHandler;
-    ProductPlacement m_ProductPlacement;
     AnchorBehaviour m_PlacementAnchor;
     int AutomaticHitTestFrameCount;
     bool uiHasBeenInitialized;
@@ -59,11 +57,6 @@ public class PlaneManager : MonoBehaviour
         VuforiaARController.Instance.RegisterOnPauseCallback(OnVuforiaPaused);
         DeviceTrackerARController.Instance.RegisterTrackerStartedCallback(OnTrackerStarted);
         DeviceTrackerARController.Instance.RegisterDevicePoseStatusChangedCallback(OnDevicePoseStatusChanged);
-        
-        m_ProductPlacement = FindObjectOfType<ProductPlacement>();
-        m_TouchHandler = FindObjectOfType<TouchHandler>();
-
-        m_TouchHandler.enableRotation = m_PlacementAugmentation.activeInHierarchy;
 
         m_PlacementAnchor = m_PlacementAugmentation.GetComponentInParent<AnchorBehaviour>();
     }
@@ -116,7 +109,8 @@ public class PlaneManager : MonoBehaviour
         
         m_ContentPositioningBehaviour = m_PlaneFinder.GetComponent<ContentPositioningBehaviour>();
 
-        if (!m_ProductPlacement.IsPlaced || TouchHandler.DoubleTap)
+        /*
+        if (!m_ProductPlacement.IsPlaced)
         {
             m_ContentPositioningBehaviour.PositionContentAtPlaneAnchor(result);
             UtilityHelper.EnableRendererColliderCanvas(m_PlacementAugmentation, true);
@@ -125,8 +119,8 @@ public class PlaneManager : MonoBehaviour
         if (!m_ProductPlacement.IsPlaced)
         {
             m_ProductPlacement.SetProductAnchor(m_PlacementAnchor.transform);
-            m_TouchHandler.enableRotation = true;
         }
+        */
     }
 
     #endregion // GROUNDPLANE_CALLBACKS
@@ -134,12 +128,9 @@ public class PlaneManager : MonoBehaviour
     public void ResetScene()
     {
         Debug.Log("ResetScene() called.");
-        m_ProductPlacement.Reset();
         UtilityHelper.EnableRendererColliderCanvas(m_PlacementAugmentation, false);
 
         DeleteAnchors();
-        m_ProductPlacement.SetProductAnchor(null);
-        m_TouchHandler.enableRotation = false;
     }
 
     public void ResetTrackers()

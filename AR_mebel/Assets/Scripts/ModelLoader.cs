@@ -45,13 +45,13 @@ public class ModelLoader : MonoBehaviour {
             yield return www;
             if (www.error != null) {
                 warningTextField.text = "Ошибка загрузки: " + www.error;
-                //StartCoroutine(ReloadStage());
+                StartCoroutine(ReloadStage());
                 throw new System.Exception("WWW download:" + www.error + " url:" + www.url);
             }
 
             AssetBundle assetBundle = www.assetBundle;
 
-            AssetBundleRequest request = assetBundle.LoadAssetAsync("Model_01.prefab", typeof(GameObject));
+            AssetBundleRequest request = assetBundle.LoadAssetAsync("model.prefab", typeof(GameObject));
             loadingProgress.value = 100 * www.progress;
             yield return request;
             GameObject model = Instantiate(request.asset as GameObject);

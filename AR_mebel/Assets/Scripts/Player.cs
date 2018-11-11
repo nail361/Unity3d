@@ -22,7 +22,7 @@ public class Player : MonoBehaviour {
     private GameObject m_ScaleIndicator;
 
     const float scaleRangeMin = 0.1f;
-    const float scaleRangeMax = 2.0f;
+    const float scaleRangeMax = 500.0f;
 
     Touch[] touches;
     bool isFirstFrameWithTwoTouches;
@@ -61,6 +61,12 @@ public class Player : MonoBehaviour {
     {
         if (Input.touchCount > 0)
         {
+            if ((Input.touches.Length == 2 || Input.touches.Length == 3) &&
+                Input.touches.Length != touches.Length)
+            {
+                UpdateCashed();
+            }
+
             touches = Input.touches;
 
             if (touches .Length != 1)
@@ -100,9 +106,12 @@ public class Player : MonoBehaviour {
 
             if (touches.Length > 1)
             {
-                float currentTouchDistance = Vector2.Distance(touches[0].position, touches[1].position);
-                float diff_y = touches[0].position.y - touches[1].position.y;
-                float diff_x = touches[0].position.x - touches[1].position.x;
+                Touch touch1 = touches[touches.Length - 2];
+                Touch touch2 = touches[touches.Length - 1];
+
+                float currentTouchDistance = Vector2.Distance(touch1.position, touch2.position);
+                float diff_y = touch1.position.y - touch2.position.y;
+                float diff_x = touch1.position.x - touch2.position.x;
                 float currentTouchAngle = Mathf.Atan2(diff_y, diff_x) * Mathf.Rad2Deg;
                 
 
@@ -125,14 +134,19 @@ public class Player : MonoBehaviour {
             }
             else if (touches.Length < 2)
             {
-                cachedAugmentationScale = modelTransform.localScale.x;
-                cachedAugmentationRotation = modelTransform.localEulerAngles;
-                isFirstFrameWithTwoTouches = true;
+                UpdateCashed();
             }
 
         }
 
         UpdateIndicators();
+    }
+
+    private void UpdateCashed()
+    {
+        cachedAugmentationScale = modelTransform.localScale.x;
+        cachedAugmentationRotation = modelTransform.localEulerAngles;
+        isFirstFrameWithTwoTouches = true;
     }
 
     private void UpdateIndicators()

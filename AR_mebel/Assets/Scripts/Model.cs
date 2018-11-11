@@ -8,6 +8,14 @@ public class Model : MonoBehaviour {
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
+
+        Renderer[] modelRenders = GetComponentsInChildren<Renderer>();
+
+        foreach(Renderer render in modelRenders)
+        {
+            render.enabled = false;
+        }
+
         SceneManager.sceneLoaded += OnLevelLoaded;
     }
 

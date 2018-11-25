@@ -3,10 +3,10 @@ using System.Collections.Generic;
 
 public class Player : MonoBehaviour {
 
-    private List<Transform> models;
     private Transform modelTransform;
 
     private int curModelIndex = 0;
+    private int modelsCount = 0;
 
     private float dist;
     private bool dragging = false;
@@ -31,30 +31,12 @@ public class Player : MonoBehaviour {
     float cachedAugmentationScale;
     Vector3 cachedAugmentationRotation;
 
+    private bool scaleMode = false;
+
     void Start()
     {
-        models = new List<Transform>();
-        for (int i = 0; i < gameObject.transform.childCount; i++) {
-            Transform model = gameObject.transform.GetChild(i);
-            if (model.tag != "Indicator")
-                models.Add(model);
-        }
-
-        modelTransform = models[curModelIndex];
-
-        m_TranslationIndicator.transform.SetParent(modelTransform, true);
-        m_RotationIndicator.transform.SetParent(modelTransform, true);
-        m_ScaleIndicator.transform.SetParent(modelTransform, true);
-
-        Vector3 modelSize = modelTransform.gameObject.GetComponent<BoxCollider>().bounds.size;
-        float maxSize = Mathf.Max(modelSize.x, modelSize.z) / 10;
-        modelSize = new Vector3(maxSize + 0.1f, 1.0f, maxSize + 0.1f);
-        m_TranslationIndicator.transform.localScale = modelSize;
-        m_RotationIndicator.transform.localScale = modelSize;
-        m_ScaleIndicator.transform.localScale = modelSize;
-
-        cachedAugmentationScale = modelTransform.localScale.x;
-        cachedAugmentationRotation = modelTransform.localEulerAngles;
+        modelsCount = Models.ModelsCount;
+        ChangeModel();
     }
 
     void Update()
@@ -127,10 +109,11 @@ public class Player : MonoBehaviour {
                 float scaleAmount = cachedAugmentationScale * scaleMultiplier;
                 float scaleAmountClamped = Mathf.Clamp(scaleAmount, scaleRangeMin, scaleRangeMax);
 
-                if (touches.Length == 2)
-                    modelTransform.localEulerAngles = cachedAugmentationRotation - new Vector3(0, angleDelta * 3f, 0);
-                if (touches.Length > 2)
+                if (scaleMode)
                     modelTransform.localScale = new Vector3(scaleAmountClamped, scaleAmountClamped, scaleAmountClamped);
+                else
+                    modelTransform.localEulerAngles = cachedAugmentationRotation - new Vector3(0, angleDelta * 3f, 0);
+
             }
             else if (touches.Length < 2)
             {
@@ -152,28 +135,63 @@ public class Player : MonoBehaviour {
     private void UpdateIndicators()
     {
         m_TranslationIndicator.SetActive(dragging);
-        m_RotationIndicator.SetActive(Input.touchCount == 2);
-        m_ScaleIndicator.SetActive(Input.touchCount > 2);
+        m_RotationIndicator.SetActive(!scaleMode && Input.touchCount == 2);
+        m_ScaleIndicator.SetActive(scaleMode && Input.touchCount == 2);
+    }
+
+    private void SetIndicatorsSize()
+    {
+        Vector3 modelSize = modelTransform.gameObject.GetComponent<BoxCollider>().bounds.size;
+        float maxSize = Mathf.Max(modelSize.x, modelSize.z) / 10;
+        modelSize = new Vector3(maxSize + 0.1f, 1.0f, maxSize + 0.1f);
+        m_TranslationIndicator.transform.localScale = modelSize;
+        m_RotationIndicator.transform.localScale = modelSize;
+        m_ScaleIndicator.transform.localScale = modelSize;
+    }
+
+    private void SetIndicatorsParent()
+    {
+        m_TranslationIndicator.transform.SetParent(modelTransform, true);
+        m_RotationIndicator.transform.SetParent(modelTransform, true);
+        m_ScaleIndicator.transform.SetParent(modelTransform, true);
+    }
+
+    private void ChangeModel()
+    {
+        modelTransform = Models.GetModel(curModelIndex).transform;
+        Models.ShowModel(curModelIndex);
+
+        SetIndicatorsParent();
+        SetIndicatorsSize();
+        UpdateCashed();
     }
 
     public void NextModel()
     {
+        Models.HideModel(curModelIndex);
         curModelIndex++;
 
-        if (curModelIndex >= models.Count)
+        if (curModelIndex >= modelsCount)
             curModelIndex = 0;
 
-        modelTransform = models[curModelIndex];
+        ChangeModel();
     }
 
     public void PrevModel()
     {
+        Models.HideModel(curModelIndex);
         curModelIndex--;
 
         if (curModelIndex < 0 )
-            curModelIndex = models.Count - 1;
+            curModelIndex = modelsCount - 1;
 
-        modelTransform = models[curModelIndex];
+        ChangeModel();
+    }
+
+    public void ChangeTouchesMode()
+    {
+        scaleMode = !scaleMode;
+        UpdateCashed();
     }
 
     public void ResetModel()

@@ -156,6 +156,7 @@ public class PlaneManager : MonoBehaviour
 
     void SetSurfaceIndicatorVisible(bool isVisible)
     {
+        
         Renderer[] renderers = m_PlaneFinder.PlaneIndicator.GetComponentsInChildren<Renderer>(true);
         Canvas[] canvas = m_PlaneFinder.PlaneIndicator.GetComponentsInChildren<Canvas>(true);
 

@@ -14,10 +14,12 @@ public static class UtilityHelper
     {
         if (Vuforia.VuforiaManager.Instance.ARCameraTransform != null)
         {
-            var lookAtPosition = Vuforia.VuforiaManager.Instance.ARCameraTransform.position - augmentation.transform.position;
+            Vector3 lookAtPosition = Vuforia.VuforiaManager.Instance.ARCameraTransform.position - augmentation.transform.position;
             lookAtPosition.y = 0;
-            var rotation = Quaternion.LookRotation(lookAtPosition);
-            augmentation.transform.rotation = rotation;
+            Vector3 oldRotation = augmentation.transform.rotation.eulerAngles;
+            oldRotation.y = 0;
+            Quaternion rotation = Quaternion.LookRotation(lookAtPosition);
+            augmentation.transform.rotation = Quaternion.Euler(rotation.eulerAngles + oldRotation);
         }
     }
 

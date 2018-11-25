@@ -14,6 +14,9 @@ public class ModelLoader : MonoBehaviour {
     [SerializeField]
     private Slider loadingProgress;
 
+    [SerializeField]
+    private GameObject AskPanel;
+
     public void LoadModel(string model_url)
     {
         this.model_url = model_url;
@@ -55,7 +58,7 @@ public class ModelLoader : MonoBehaviour {
             loadingProgress.value = 100 * www.progress;
             yield return request;
             GameObject model = Instantiate(request.asset as GameObject);
-            model.AddComponent<Model>();
+            Models.AddModel(model);
 
             assetBundle.Unload(false);
             OnBundleLoaded();
@@ -69,6 +72,17 @@ public class ModelLoader : MonoBehaviour {
     }
 
     private void OnBundleLoaded()
+    {
+        AskPanel.SetActive(true);
+        loadingPanel.SetActive(false);
+    }
+
+    public void LoadAnoherModel()
+    {
+        SceneManager.LoadScene("QR_scene");
+    }
+
+    public void LoadARScene()
     {
         SceneManager.LoadScene("AR_scene");
     }

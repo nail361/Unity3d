@@ -58,6 +58,8 @@ public class QR_Reader : MonoBehaviour
 
     void Start()
     {
+        Screen.sleepTimeout = SleepTimeout.NeverSleep;
+
         encoded = new Texture2D(256, 256);
 
         camTexture = new WebCamTexture(640, 480, 30);
@@ -71,6 +73,15 @@ public class QR_Reader : MonoBehaviour
 
     void Update()
     {
+#if UNITY_ANDROID
+        {
+            if (Input.GetKey(KeyCode.Escape))
+            {
+                Application.Quit();
+                return;
+            }
+        }
+#endif
         if (c == null)
         {
             c = camTexture.GetPixels32();

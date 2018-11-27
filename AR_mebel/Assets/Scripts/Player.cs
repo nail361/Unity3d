@@ -36,7 +36,8 @@ public class Player : MonoBehaviour {
     void Start()
     {
         modelsCount = Models.ModelsCount;
-        ChangeModel();
+
+        Invoke("ChangeModel", 3.0f);
     }
 
     void Update()
@@ -139,7 +140,7 @@ public class Player : MonoBehaviour {
         m_ScaleIndicator.SetActive(scaleMode && Input.touchCount == 2);
     }
 
-    private void SetIndicatorsSize()
+    private void SetIndicatorsSizeAndPos()
     {
         Vector3 modelSize = modelTransform.gameObject.GetComponent<BoxCollider>().bounds.size;
         float maxSize = Mathf.Max(modelSize.x, modelSize.z) / 10;
@@ -147,6 +148,10 @@ public class Player : MonoBehaviour {
         m_TranslationIndicator.transform.localScale = modelSize;
         m_RotationIndicator.transform.localScale = modelSize;
         m_ScaleIndicator.transform.localScale = modelSize;
+
+        m_TranslationIndicator.transform.localPosition = new Vector3(0, 0, modelSize.y / 2 * -1);
+        m_RotationIndicator.transform.localPosition = new Vector3(0, 0, modelSize.y / 2 * -1);
+        m_ScaleIndicator.transform.localPosition = new Vector3(0, 0, modelSize.y / 2 * -1);
     }
 
     private void SetIndicatorsParent()
@@ -162,7 +167,7 @@ public class Player : MonoBehaviour {
         Models.ShowModel(curModelIndex);
 
         SetIndicatorsParent();
-        SetIndicatorsSize();
+        SetIndicatorsSizeAndPos();
         UpdateCashed();
     }
 

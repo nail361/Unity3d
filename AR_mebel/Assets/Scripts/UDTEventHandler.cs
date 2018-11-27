@@ -23,6 +23,7 @@ public class UDTEventHandler : MonoBehaviour, IUserDefinedTargetEventHandler
     public ImageTargetBehaviour ImageTargetTemplate;
 
     public GameObject TargetBuilderUI;
+    public GameObject InterfaceUI;
 
     public int LastTargetIndex
     {
@@ -164,6 +165,7 @@ public class UDTEventHandler : MonoBehaviour, IUserDefinedTargetEventHandler
             m_TargetBuildingBehaviour.BuildNewTarget(targetName, ImageTargetTemplate.GetSize().x);
 
             TargetBuilderUI.SetActive(false);
+            InterfaceUI.SetActive(true);
         }
         else
         {

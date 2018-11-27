@@ -18,6 +18,19 @@ public class SceneParams : MonoBehaviour {
         }
     }
 
+    private void Update()
+    {
+#if UNITY_ANDROID
+        {
+            if (Input.GetKey(KeyCode.Escape))
+            {
+                Application.Quit();
+                return;
+            }
+        }
+#endif
+    }
+
     public void SwitchShadows()
     {
         mainLight.shadows = mainLight.shadows == LightShadows.None ? LightShadows.Soft : LightShadows.None;

@@ -19,6 +19,8 @@ public class PlaneManager : MonoBehaviour
 
     public PlaneFinderBehaviour m_PlaneFinder;
 
+    public GameObject InterfaceUI;
+
     [Header("Plane Augmentations")]
     public GameObject m_PlacementAugmentation;
     public static bool GroundPlaneHitReceived;
@@ -205,6 +207,8 @@ public class PlaneManager : MonoBehaviour
                 m_PositionalDeviceTracker.Start();
             if (m_PositionalDeviceTracker.IsActive && !m_SmartTerrain.IsActive)
                 m_SmartTerrain.Start();
+
+            InterfaceUI.SetActive(true);
         }
         else
         {
@@ -246,6 +250,8 @@ public class PlaneManager : MonoBehaviour
 
         m_PositionalDeviceTracker = TrackerManager.Instance.GetTracker<PositionalDeviceTracker>();
         m_SmartTerrain = TrackerManager.Instance.GetTracker<SmartTerrain>();
+
+
 
         if (m_PositionalDeviceTracker != null)
         {

@@ -12,6 +12,8 @@ public class Models : MonoBehaviour {
 
     private static List<GameObject> models;
 
+    private static List<ModelInfo> modelsInfo;
+
     public static Models _instance;
 
     private void Awake()
@@ -36,11 +38,30 @@ public class Models : MonoBehaviour {
     public static void AddModel(GameObject model)
     {
         models.Add(model);
+
+        ModelInfo modelInfo = new ModelInfo
+        {
+            name = "Model_" + models.Count.ToString(),
+            description = "",
+            price = ""
+        };
+        modelsInfo.Add(modelInfo);
+
         DontDestroyOnLoad(model);
 
         HideModel(models.Count-1);
 
         model.name = "Model_" + models.Count.ToString();
+    }
+
+    public static void Remove(int modelIndex)
+    {
+
+    }
+
+    public static ModelInfo GetModelInfo(int modelIndex)
+    {
+        return modelsInfo[modelIndex];
     }
 
     public static GameObject GetModel(int modelIndex)

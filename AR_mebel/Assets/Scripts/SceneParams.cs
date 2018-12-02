@@ -1,11 +1,20 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using UnityEngine.UI;
 using UnityEngine;
 
 public class SceneParams : MonoBehaviour {
 
     [SerializeField]
     private Light mainLight;
+
+    [Header("Pitch btn")]
+    [SerializeField]
+    private Image pitchImage;
+    [SerializeField]
+    private Sprite rotateSprite;
+    [SerializeField]
+    private Sprite scaleSprite;
+
+    private bool rotate = true;
 
     [SerializeField]
     private GameObject[] changeModelBtns;
@@ -24,6 +33,12 @@ public class SceneParams : MonoBehaviour {
             }
         }
 #endif
+    }
+
+    public void SwitchPitchImage()
+    {
+        rotate = !rotate;
+        pitchImage.sprite = rotate ? rotateSprite : scaleSprite;
     }
 
     public void SwitchShadows()

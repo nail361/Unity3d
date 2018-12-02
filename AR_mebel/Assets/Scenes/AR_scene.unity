@@ -122,6 +122,7 @@ GameObject:
   m_Component:
   - component: {fileID: 13921871}
   - component: {fileID: 13921872}
+  - component: {fileID: 13921873}
   m_Layer: 0
   m_Name: Content
   m_TagString: Untagged
@@ -145,7 +146,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -0.0000018542348, y: -0.0000038146973}
-  m_SizeDelta: {x: 0, y: 300}
+  m_SizeDelta: {x: 0, y: 10}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &13921872
 MonoBehaviour:
@@ -169,6 +170,19 @@ MonoBehaviour:
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 1
   m_ChildControlHeight: 0
+--- !u!114 &13921873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 13921870}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1741964061, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 0
+  m_VerticalFit: 1
 --- !u!1 &66290797
 GameObject:
   m_ObjectHideFlags: 0
@@ -2460,7 +2474,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &701133703
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2571,7 +2585,7 @@ RectTransform:
   m_Father: {fileID: 1946646392}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.19}
+  m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
@@ -3051,8 +3065,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 784594105}
   m_HandleRect: {fileID: 784594104}
   m_Direction: 2
-  m_Value: 1
-  m_Size: 0.81
+  m_Value: 0
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -4731,7 +4745,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   listItemPref: {fileID: 1872924575438926, guid: 21d6cab14808c9943aefe9bec1c5255d,
     type: 2}
-  listPlacement: {fileID: 13921870}
+  listPlacement: {fileID: 13921871}
 --- !u!95 &1430390755
 Animator:
   serializedVersion: 3

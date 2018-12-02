@@ -6,7 +6,6 @@ public class Player : MonoBehaviour {
     private Transform modelTransform;
 
     private int curModelIndex = 0;
-    private int modelsCount = 0;
 
     private float dist;
     private bool dragging = false;
@@ -35,8 +34,6 @@ public class Player : MonoBehaviour {
 
     void Start()
     {
-        modelsCount = Models.ModelsCount;
-
         Invoke("ChangeModel", 3.0f);
     }
 
@@ -161,6 +158,13 @@ public class Player : MonoBehaviour {
         m_ScaleIndicator.transform.SetParent(modelTransform, true);
     }
 
+    public void SelectModel(int modelID)
+    {
+        Models.HideModel(curModelIndex);
+        curModelIndex = modelID;
+        ChangeModel();
+    }
+
     private void ChangeModel()
     {
         modelTransform = Models.GetModel(curModelIndex).transform;
@@ -176,7 +180,7 @@ public class Player : MonoBehaviour {
         Models.HideModel(curModelIndex);
         curModelIndex++;
 
-        if (curModelIndex >= modelsCount)
+        if (curModelIndex >= Models.ModelsCount)
             curModelIndex = 0;
 
         ChangeModel();
@@ -188,7 +192,7 @@ public class Player : MonoBehaviour {
         curModelIndex--;
 
         if (curModelIndex < 0 )
-            curModelIndex = modelsCount - 1;
+            curModelIndex = Models.ModelsCount - 1;
 
         ChangeModel();
     }

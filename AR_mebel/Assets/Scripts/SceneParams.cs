@@ -10,16 +10,11 @@ public class SceneParams : MonoBehaviour {
     [SerializeField]
     private GameObject[] changeModelBtns;
 
-    private void Awake()
-    {
-        if (Models.ModelsCount < 2) {
-            changeModelBtns[0].SetActive(false);
-            changeModelBtns[1].SetActive(false);
-        }
-    }
-
     private void Update()
     {
+        changeModelBtns[0].SetActive(Models.ModelsCount > 1);
+        changeModelBtns[1].SetActive(Models.ModelsCount > 1);
+
 #if UNITY_ANDROID
         {
             if (Input.GetKey(KeyCode.Escape))

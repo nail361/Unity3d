@@ -75,6 +75,7 @@ GameObject:
   - component: {fileID: 114393120240353902}
   - component: {fileID: 114424211368023076}
   - component: {fileID: 114392727727057236}
+  - component: {fileID: 114464926581862800}
   m_Layer: 0
   m_Name: modelRow
   m_TagString: Untagged
@@ -93,9 +94,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71bfd9ead7eda3b4b9d635b6bf674744, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  itemID: 0
   nameField: {fileID: 114723071391383822}
   descriptionField: {fileID: 0}
   priceField: {fileID: 0}
+  removeBtn: {fileID: 1512804456618332}
+  activeColor: {r: 1, g: 1, b: 1, a: 1}
+  inactiveColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
 --- !u!114 &114393120240353902
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -145,6 +150,36 @@ MonoBehaviour:
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0
   m_ChildControlHeight: 0
+--- !u!114 &114464926581862800
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1872924575438926}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1862395651, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 4
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 114392727727057236}
+          m_MethodName: SelectItem
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+      m_TypeName: UnityEngine.EventSystems.EventTrigger+TriggerEvent, UnityEngine.UI,
+        Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  delegates: []
 --- !u!114 &114723071391383822
 MonoBehaviour:
   m_ObjectHideFlags: 1

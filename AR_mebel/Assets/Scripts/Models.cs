@@ -22,7 +22,8 @@ public class Models : MonoBehaviour {
 
         _instance = this;
         DontDestroyOnLoad(gameObject);
-        models = new List<GameObject>(); 
+        models = new List<GameObject>();
+        modelsInfo = new List<ModelInfo>();
         SceneManager.sceneLoaded += OnLevelLoaded;
     }
 
@@ -56,7 +57,9 @@ public class Models : MonoBehaviour {
 
     public static void Remove(int modelIndex)
     {
-
+        Destroy(models[modelIndex]);
+        models.RemoveAt(modelIndex);
+        modelsInfo.RemoveAt(modelIndex);
     }
 
     public static ModelInfo GetModelInfo(int modelIndex)

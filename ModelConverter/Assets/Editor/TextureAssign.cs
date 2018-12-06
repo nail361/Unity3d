@@ -441,8 +441,8 @@ public class TextureAssign : EditorWindow
 		string[] jpgPaths = null;
         
         //Get all the textures in the project.
-		pngPaths = Directory.GetFiles("Assets\\Model\\", pngExtension, SearchOption.AllDirectories);
-		jpgPaths = Directory.GetFiles("Assets\\Model\\", jpgExtension, SearchOption.AllDirectories);
+		pngPaths = Directory.GetFiles("Assets\\Models\\", pngExtension, SearchOption.AllDirectories);
+		jpgPaths = Directory.GetFiles("Assets\\Models\\", jpgExtension, SearchOption.AllDirectories);
 
 		//Add the texture paths to a list.
 		texturePathsList.AddRange(pngPaths);

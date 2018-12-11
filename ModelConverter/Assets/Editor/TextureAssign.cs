@@ -7,8 +7,8 @@ using System.Collections.Generic;
 //Only jpg and png textures are supported at the moment.
 //Specular workflow is not tested for the HD SRP Lit shader.
 
-
-public class TextureAssign : EditorWindow
+[ExecuteInEditMode]
+public class TextureAssign : MonoBehaviour
 {
 	//Albedo texture: RGB = albedo, alpha = transparency.
 	//Metal/rough texture: R (from RGB) = metallic, alpha = smoothness.
@@ -80,138 +80,58 @@ public class TextureAssign : EditorWindow
     string emissiveColorKeyword = "_EMISSIVE_COLOR_MAP"; //HD SRP Lit shader.
     string occlusionKeyword = "_OCCLUSIONMAP";
 
-    [MenuItem("Window/TextureAssign")]
-	static void Init()
-	//public static void ShowWindow()
-	{
-		// Get existing open window or if none, make a new one:
-		TextureAssign textureAssignWindow = (TextureAssign)EditorWindow.GetWindow(typeof(TextureAssign));
-		textureAssignWindow.position = new Rect(100, 200, 300, 180);
+    void Start() {
+        AssignTextures();
+    }
 
-		//Change the window title here.
-		GUIContent titleContent = new GUIContent("TextureAssign");
-		textureAssignWindow.titleContent = titleContent;
-	}
+	public void AssignTextures() {
 
-	void OnGUI()
-	{
-		GUILayout.Space(20);
+		float timeBegin = Time.realtimeSinceStartup;
 
-		GUILayout.BeginHorizontal();
-		replaceRedundantTextures = EditorGUILayout.Toggle("Replace redundant", replaceRedundantTextures);
-		GUILayout.Space(20);
-		GUILayout.EndHorizontal();
+		List<string> skipMaterialList = new List<string>();
 
-		GUILayout.BeginHorizontal();
-		processOpacity = EditorGUILayout.Toggle("Process opacity", processOpacity);
-		GUILayout.Space(20);
-		GUILayout.EndHorizontal();
+		redundantTextureAmount = 0;
+		assignedTextureAmount = 0;
 
-		GUILayout.BeginHorizontal();
-		if (GUILayout.Button("Assign textures"))
+		//Get all textures in the entire project.
+		List<string> texturePathsList = GetTextures();
+
+		Debug.Log(texturePathsList.Count + " textures found.");
+
+		bool[] uniqueTextures = TagUniqueTextures(texturePathsList);
+
+        //Get all the game objects in the scene.
+        Renderer[] renders = transform.GetComponentsInChildren<Renderer>();
+
+		for (int i = 0; i < renders.Length; i++)
 		{
-			float timeBegin = Time.realtimeSinceStartup;
+			//Get the materials on a mesh (can be more than one).
+			Material[] materials = renders[i].sharedMaterials;
 
-			List<string> skipMaterialList = new List<string>();
+			for(int matIndex = 0; matIndex < materials.Length; matIndex++)
+			{ 
+				Material material = materials[matIndex];
 
-			redundantTextureAmount = 0;
-			assignedTextureAmount = 0;
+				if (material != null)
+				{
+					//Has the material been processed before and is it unique?
+					bool skipMaterial = IsSkipMaterial(skipMaterialList, material);
 
-			//Get all textures in the entire project.
-			List<string> texturePathsList = GetTextures();
-
-			Debug.Log(texturePathsList.Count + " textures found.");
-
-			bool[] uniqueTextures = TagUniqueTextures(texturePathsList);
-
-            //Get all the game objects in the scene.
-            Renderer[] renders = FindObjectsOfType<Renderer>();
-
-			for (int i = 0; i < renders.Length; i++)
-			{
-				//Get the materials on a mesh (can be more than one).
-				Material[] materials = renders[i].sharedMaterials;
-
-				for(int matIndex = 0; matIndex < materials.Length; matIndex++)
-				{ 
-					Material material = materials[matIndex];
-
-					if (material != null)
+					if (!skipMaterial)
 					{
-						//Has the material been processed before and is it unique?
-						bool skipMaterial = IsSkipMaterial(skipMaterialList, material);
-
-						if (!skipMaterial)
-						{
-							AssignTexturePathListToObject(material, matIndex, texturePathsList);
-							skipMaterialList.Add(material.name);
-						}
+						AssignTexturePathListToObject(material, matIndex, texturePathsList);
+						skipMaterialList.Add(material.name);
 					}
 				}
 			}
-
-			Debug.Log(redundantTextureAmount + " redundant textures replaced with a color or value.");
-			Debug.Log(assignedTextureAmount + " textures assigned.");
-
-			float timeEnd = Time.realtimeSinceStartup;
-			PrintTimeDifference(timeBegin, timeEnd);
 		}
-		GUILayout.EndHorizontal();
-        
-		GUILayout.BeginHorizontal();
-		if (GUILayout.Button("Make material unique"))
-		{
-			//Get the selected game object.
-			UnityEngine.Object[] objects = Selection.GetFiltered(typeof(UnityEngine.Object), SelectionMode.TopLevel);
 
-			//An object is selected.
-			if (objects.Length != 0)
-			{
-				if(objects[0] is GameObject) 
-				{
-					//Get the selected object.
-					GameObject selectedObject = (GameObject)objects[0];
+		Debug.Log(redundantTextureAmount + " redundant textures replaced with a color or value.");
+		Debug.Log(assignedTextureAmount + " textures assigned.");
 
-					MakeMaterialUnique(selectedObject);
-				}
-			}
-
-			else
-			{
-				Debug.Log("Select an object first.");
-			}
-		}
-		GUILayout.EndHorizontal();
-
-
-		GUILayout.BeginHorizontal();
-		if (GUILayout.Button("Crunch"))
-		{
-			float timeBegin = Time.realtimeSinceStartup;
-
-			List<string> texturePathsList = GetTextures();
-
-			//Loop through all the textures.
-			for (int i = 0; i < texturePathsList.Count; i++)
-			{
-				TextureImporter importer = AssetImporter.GetAtPath(texturePathsList[i]) as TextureImporter;
-
-				importer.crunchedCompression = true;
-				importer.compressionQuality = 100;
-
-				//Apply the texture importer settings.
-				AssetDatabase.WriteImportSettingsIfDirty(texturePathsList[i]);
-				UnityEditor.AssetDatabase.SaveAssets();
-				UnityEditor.AssetDatabase.Refresh();
-			}
-
-			float timeEnd = Time.realtimeSinceStartup;
-			PrintTimeDifference(timeBegin, timeEnd);
-		}
-		GUILayout.Space(20);
-		GUILayout.EndHorizontal();
+		float timeEnd = Time.realtimeSinceStartup;
+		PrintTimeDifference(timeBegin, timeEnd);
 	}
-
 
 	//Has the material been processed before and is it unique?
 	bool IsSkipMaterial(List<string> skipMaterialList, Material material)

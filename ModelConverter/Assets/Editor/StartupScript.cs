@@ -24,19 +24,60 @@ public class StartupScript : Editor {
 
                 GameObject model = Instantiate(modelFBX) as GameObject;
                 model.AddComponent<AttachBoxCollider>();
-                //Attach textures
-                //Create Snapshot
-                PrefabUtility.CreatePrefab("Assets/Prefabs/model.prefab", model);
-                //AssetDatabase.CreateAsset(model, "Assets/Prefabs/model.prefab");
-                //AssetDatabase.AddObjectToAsset();
-                DestroyImmediate(model);
 
-                //CreateAssetBundle
-                
+                //Attach textures
+
+                ScreenCapture.CaptureScreenshot("Assets/Screenshot/screenshot.png");
+
+                PrefabUtility.CreatePrefab("Assets/Prefabs/model.prefab", model);
+
+                //DestroyImmediate(model);
+
+                //CreateAssetBundle();
             }
         }
     }
+
+    private static void CreateAssetBundle()
+    {
+        // Create the array of bundle build details.
+        AssetBundleBuild[] buildMap = new AssetBundleBuild[1];
+
+        string[] modelAssets = new string[1];
+        modelAssets[0] = "Assets/Prefabs/model.prefab";
+
+        buildMap[0].assetNames = modelAssets;
+        buildMap[0].assetBundleName = "model";
+
+        //CreateAssetBundle
+        BuildPipeline.BuildAssetBundles("Assets/AssetBundles", buildMap, BuildAssetBundleOptions.None, BuildTarget.Android);
+    }
 }
+
+/*
+private float m_LastEditorUpdateTime;
+
+protected virtual void OnEnable()
+{
+#if UNITY_EDITOR
+    m_LastEditorUpdateTime = Time.realtimeSinceStartup;
+    EditorApplication.update += OnEditorUpdate;
+#endif
+}
+
+protected virtual void OnDisable()
+{
+#if UNITY_EDITOR
+    EditorApplication.update -= OnEditorUpdate;
+#endif
+}
+
+protected virtual void OnEditorUpdate()
+{
+    // In here you can check the current realtime, see if a certain
+    // amount of time has elapsed, and perform some task.
+}
+*/
 
 /*
 // Helper function for getting the command line arguments

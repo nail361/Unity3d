@@ -24,12 +24,13 @@ public class StartupScript : Editor {
 
                 GameObject model = Instantiate(modelFBX) as GameObject;
                 model.AddComponent<AttachBoxCollider>();
+                model.AddComponent<FindTextures>();
 
                 //Attach textures
 
-                ScreenCapture.CaptureScreenshot("Assets/Screenshot/screenshot.png");
+                //ScreenCapture.CaptureScreenshot("Assets/Screenshot/screenshot.png");
 
-                PrefabUtility.CreatePrefab("Assets/Prefabs/model.prefab", model);
+                //PrefabUtility.CreatePrefab("Assets/Prefabs/model.prefab", model);
 
                 //DestroyImmediate(model);
 

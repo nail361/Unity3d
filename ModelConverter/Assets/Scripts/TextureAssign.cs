@@ -51,21 +51,19 @@ public class TextureAssign : MonoBehaviour
     string emissionColorID = "_EmissionColor";
     string emissiveColorID = "_EmissiveColor"; //HD SRP Lit shader.
 
-
-
     //These are the material sliders.
     string metallicSliderID = "_Metallic";
     string glossinessSliderID = "_Glossiness";
     string smoothnessSliderID = "_Smoothness"; //HD SRP Lit shader.
 
     //These are the names added to the textures when exported by Substance Painter.
-    const string albedoExtension = "_AlbedoTransparency";
-	const string metallicExtension = "_MetallicSmoothness";
-	const string specularExtension = "_SpecularSmoothness";
-	const string normalExtension = "_Normal";
-	const string heightExtension = "_Height"; //This texture has to be manually added to the export preset in SP, so make sure the name is correct.
-	const string occlusionExtension = "_AO"; //This texture has to be manually added to the export preset in SP, so make sure the name is correct. In the HD SRP Lit shader, this is packed into the MaskMap.
-    const string emissionExtension = "_Emission";
+    const string albedoExtension = "_MainTex";
+	const string metallicExtension = "_MetallicGlossMap";
+	const string specularExtension = "_SpecGlossMap";
+	const string normalExtension = "_NormalMap";
+	const string heightExtension = "_BumpMap";
+	const string occlusionExtension = "_OcclusionMap";
+    const string emissionExtension = "_EmissionMap";
 
 	//Texture keywords.
 	string metallicKeyword = "_METALLICGLOSSMAP";
@@ -280,7 +278,7 @@ public class TextureAssign : MonoBehaviour
 		bool found = false;
 
 		//Get all folders in the project.
-		string[] directories = Directory.GetDirectories("Assets\\", "*", SearchOption.AllDirectories);
+		string[] directories = Directory.GetDirectories("Assets\\Models", "*", SearchOption.AllDirectories);
 
 		Transform parent = selectedObject.transform.parent;
 

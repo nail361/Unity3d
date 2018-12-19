@@ -23,8 +23,9 @@ public class StartupScript : Editor {
                 Object modelFBX = AssetDatabase.LoadAssetAtPath(sFilePath, typeof(Object));
 
                 GameObject model = Instantiate(modelFBX) as GameObject;
-                model.AddComponent<AttachBoxCollider>();
-                model.AddComponent<FindTextures>();
+                model.AddComponent<BoxCollider>();
+                AttachBoxCollider.Init(model);
+                FindTextures.Init(model);
 
                 //Attach textures
 

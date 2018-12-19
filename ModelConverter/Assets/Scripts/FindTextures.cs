@@ -4,22 +4,22 @@ using UnityEngine;
 using UnityEditor;
 
 [ExecuteInEditMode]
-public class FindTextures : MonoBehaviour {
+public static class FindTextures {
 
-    private int maxTextureSize = 512;
+    private static readonly int maxTextureSize = 512;
 
-    private List<Material> materials;
-    private List<string> textures;
-    private List<string> texturesReady = new List<string>();
+    private static List<Material> materials;
+    private static List<string> textures;
+    private static List<string> texturesReady = new List<string>();
 
     private const string MAIN_TEX = "MainTex";
     private const string NORMAL_MAP = "NormalMap";
 
-    private void Start()
+    public static void Init(GameObject model)
     {
         materials = new List<Material>();
 
-        Renderer[] renderers = gameObject.GetComponentsInChildren<Renderer>();
+        Renderer[] renderers = model.GetComponentsInChildren<Renderer>();
 
         foreach (Renderer renderer in renderers)
         {
@@ -33,7 +33,7 @@ public class FindTextures : MonoBehaviour {
         AssignTextures();
     }
 
-    private List<string> GetTextures()
+    private static List<string> GetTextures()
     {
         List<string> texturePathsList = new List<string>();
         string[] pngPaths = null;
@@ -51,7 +51,7 @@ public class FindTextures : MonoBehaviour {
         return texturePathsList;
     }
 
-    private void AssignTextures()
+    private static void AssignTextures()
     {
         foreach(Material mat in materials)
         {

@@ -1,21 +1,25 @@
 ﻿using UnityEngine;
 
 [ExecuteInEditMode]
-[RequireComponent(typeof(BoxCollider))]
-public class AttachBoxCollider : MonoBehaviour {
+public static class AttachBoxCollider {
 
-    void Start() {
-        BoxCollider collider = gameObject.GetComponent<BoxCollider>();
+    public static void Init(GameObject model) {
+        BoxCollider collider = model.GetComponent<BoxCollider>();
 
         Bounds bounds = new Bounds(Vector3.zero, Vector3.zero);
-        MeshFilter[] filters = gameObject.GetComponentsInChildren<MeshFilter>();
+        MeshFilter[] filters = model.GetComponentsInChildren<MeshFilter>();
+
+        float summ = 0;
+        int i = 0;
+
         foreach (MeshFilter f in filters)
         {
             bounds.Encapsulate(f.sharedMesh.bounds);
-            bounds.center = Vector3.zero;
-
+            summ += f.transform.position.y;
+            i++;
         }
+
         collider.size = bounds.size;
-        collider.center = bounds.center;
+        collider.center = new Vector3(0f, summ / i, 0f);
     }
 }

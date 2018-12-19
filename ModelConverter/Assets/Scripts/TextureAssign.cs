@@ -78,11 +78,7 @@ public class TextureAssign : MonoBehaviour
     string emissiveColorKeyword = "_EMISSIVE_COLOR_MAP"; //HD SRP Lit shader.
     string occlusionKeyword = "_OCCLUSIONMAP";
 
-    void Start() {
-        AssignTextures();
-    }
-
-	public void AssignTextures() {
+	public void AssignTextures(GameObject model) {
 
 		float timeBegin = Time.realtimeSinceStartup;
 

@@ -23,32 +23,47 @@ public class StartupScript : Editor {
 
                 //Prepare FBX
                 ModelImporter modelImporter  = AssetImporter.GetAtPath(sFilePath) as ModelImporter;
-                modelImporter.ExtractTextures("Assets\\Models\\Textures");
+                //modelImporter.ExtractTextures("Assets\\Models\\Textures");
+                modelImporter.materialLocation = ModelImporterMaterialLocation.External;
+                modelImporter.materialName = ModelImporterMaterialName.BasedOnMaterialName;
+                modelImporter.animationType = ModelImporterAnimationType.Legacy;
                 //ExtractMaterials(sFilePath, modelImporter);
-
-                Object modelFBX = AssetDatabase.LoadAssetAtPath(sFilePath, typeof(Object));
-
-                GameObject model = Instantiate(modelFBX) as GameObject;
-                //Scale object
-                //ScaleCOde HERE
-                model.AddComponent<BoxCollider>();
-                AttachBoxCollider.Init(model);
-                //Attach textures
-                FindTextures.Init(model);
 
                 AssetDatabase.WriteImportSettingsIfDirty(sFilePath);
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
 
-                //ScreenCapture.CaptureScreenshot("Assets/Screenshot/screenshot.png");
+                Object modelFBX = AssetDatabase.LoadAssetAtPath(sFilePath, typeof(Object));
 
-                //PrefabUtility.CreatePrefab("Assets/Prefabs/model.prefab", model);
+                GameObject model = Instantiate(modelFBX) as GameObject;
+                
+                model.AddComponent<BoxCollider>();
+                AttachBoxCollider.Init(model);
+                //Scale object
+                //ScaleModel(model);
+                //Attach textures
+                FindTextures.Init(model);
+
+                ScreenCapture.CaptureScreenshot("Assets/Screenshot/screenshot.png");
+
+                PrefabUtility.CreatePrefab("Assets/Prefabs/model.prefab", model);
 
                 //DestroyImmediate(model);
 
-                //CreateAssetBundle();
+                CreateAssetBundle();
             }
         }
+    }
+
+    private static void ScaleModel(GameObject model)
+    {
+        Vector3 size = model.GetComponent<BoxCollider>().bounds.size;
+        float deltaScale = 0f;
+
+        if (Mathf.Max(size.x, size.y, size.z) > 2f){
+            deltaScale = Mathf.Max(size.x, size.y, size.z) - 2f;
+        }
+
     }
 
     private static void ExtractMaterials(string importedAssets, ModelImporter modelImporter)

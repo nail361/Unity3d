@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using UnityEngine;
 using UnityEditor;
+using System.Linq;
 
 public class StartupScript : Editor {
 
@@ -16,18 +17,28 @@ public class StartupScript : Editor {
 
         foreach (string sFilePath in aFilePaths)
         {
-            if (Path.GetExtension(sFilePath) == ".FBX" || Path.GetExtension(sFilePath) == ".fbx")
+            if (Path.GetExtension(sFilePath).ToLower() == ".fbx")
             {
                 Debug.Log(sFilePath);
+
+                //Prepare FBX
+                ModelImporter modelImporter  = AssetImporter.GetAtPath(sFilePath) as ModelImporter;
+                modelImporter.ExtractTextures("Assets\\Models\\Textures");
+                //ExtractMaterials(sFilePath, modelImporter);
 
                 Object modelFBX = AssetDatabase.LoadAssetAtPath(sFilePath, typeof(Object));
 
                 GameObject model = Instantiate(modelFBX) as GameObject;
+                //Scale object
+                //ScaleCOde HERE
                 model.AddComponent<BoxCollider>();
                 AttachBoxCollider.Init(model);
+                //Attach textures
                 FindTextures.Init(model);
 
-                //Attach textures
+                AssetDatabase.WriteImportSettingsIfDirty(sFilePath);
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
 
                 //ScreenCapture.CaptureScreenshot("Assets/Screenshot/screenshot.png");
 
@@ -37,6 +48,20 @@ public class StartupScript : Editor {
 
                 //CreateAssetBundle();
             }
+        }
+    }
+
+    private static void ExtractMaterials(string importedAssets, ModelImporter modelImporter)
+    {
+        string materialsPath = "Assets\\Models\\Materials\\";
+
+        var materials = AssetDatabase.LoadAllAssetsAtPath(modelImporter.assetPath).Where(x => x.GetType() == typeof(Material));
+
+        foreach (var material in materials)
+        {
+            var newAssetPath = materialsPath + material.name + ".mat";
+            AssetDatabase.MoveAsset(importedAssets+"\\"+ material.name + ".mat", newAssetPath);
+            //AssetDatabase.AddObjectToAsset(material, newAssetPath);
         }
     }
 

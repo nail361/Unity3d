@@ -55,6 +55,7 @@ public static class FindTextures {
     {
         foreach(Material mat in materials)
         {
+            string matName = mat.name.ToLower();
             foreach (string texturePath in textures)
             {
                 string[] textureNameSplit = Path.GetFileName(texturePath).Split('_');
@@ -62,7 +63,7 @@ public static class FindTextures {
 
                 for (int i = 0; i < textureNameSplit.Length - 1; i++)
                 {
-                    if (mat.name.Contains(textureNameSplit[i]))
+                    if (matName.Contains(textureNameSplit[i].ToLower()))
                     {
                         TextureImporter importer = AssetImporter.GetAtPath(texturePath) as TextureImporter;
                         if (!texturesReady.Contains(texturePath))

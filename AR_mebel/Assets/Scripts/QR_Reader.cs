@@ -112,7 +112,7 @@ public class QR_Reader : MonoBehaviour
         {
             //Проверка урла на наш сервер.
 
-            if (QR_result.IndexOf("mebel-qr.mediaidea.net") != -1) {
+            if (QR_result.IndexOf("prodesign") != -1) {
                 warningTextField.text = "";
                 correct = true;
             }

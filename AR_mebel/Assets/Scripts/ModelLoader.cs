@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class ModelLoader : MonoBehaviour {
 
+    private static readonly string server_url = "http://prodesign.mediaidea.net/getmodel/?";
     private string model_url = "";
 
     [SerializeField]
@@ -42,7 +43,7 @@ public class ModelLoader : MonoBehaviour {
             yield return null;
         }
 
-        using (WWW www = WWW.LoadFromCacheOrDownload(model_url, 0))
+        using (WWW www = WWW.LoadFromCacheOrDownload(server_url+model_url, 0))
         {
             loadingProgress.value = 100 * www.progress;
             yield return www;

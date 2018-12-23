@@ -38,6 +38,7 @@ public class Models : MonoBehaviour {
 
     public static void AddModel(GameObject model)
     {
+        model.AddComponent<AnimManager>();
         models.Add(model);
 
         ModelInfo modelInfo = new ModelInfo

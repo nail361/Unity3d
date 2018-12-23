@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class AnimManager : MonoBehaviour {
 
@@ -11,16 +9,16 @@ public class AnimManager : MonoBehaviour {
     {
         anim = GetComponent<Animation>();
         anim.playAutomatically = false;
+        anim.wrapMode = WrapMode.PingPong;
     }
 
     public void PlayAnim()
     {
-        anim.Play();
-    }
-
-    public bool HasAnim()
-    {
-        if (anim == null || anim.GetClipCount() == 0 ) return false;
-        else return true;
+        if (anim.isPlaying) {
+            anim.Stop();
+            anim.Rewind();
+        }
+        else
+            anim.Play();
     }
 }

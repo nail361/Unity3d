@@ -19,6 +19,9 @@ public class SceneParams : MonoBehaviour {
     [SerializeField]
     private GameObject[] changeModelBtns;
 
+    [SerializeField]
+    private Button animationBtn;
+
     private void Update()
     {
         changeModelBtns[0].SetActive(Models.ModelsCount > 1);
@@ -44,5 +47,14 @@ public class SceneParams : MonoBehaviour {
     public void SwitchShadows()
     {
         mainLight.shadows = mainLight.shadows == LightShadows.None ? LightShadows.Soft : LightShadows.None;
+    }
+
+    public void SwitchAnimationBtn(Animation anim)
+    {
+        if (anim != null && anim.GetClipCount() > 0)
+        {
+            animationBtn.interactable = true;
+        }
+        else animationBtn.interactable = false;
     }
 }

@@ -20,6 +20,8 @@ public class Player : MonoBehaviour {
     [SerializeField]
     private GameObject m_ScaleIndicator;
 
+    private SceneParams sceneParams;
+
     const float scaleRangeMin = 0.1f;
     const float scaleRangeMax = 500.0f;
 
@@ -34,6 +36,7 @@ public class Player : MonoBehaviour {
 
     void Start()
     {
+        sceneParams = FindObjectOfType<SceneParams>();
         Invoke("ChangeModel", 3.0f);
     }
 
@@ -173,6 +176,7 @@ public class Player : MonoBehaviour {
         SetIndicatorsParent();
         SetIndicatorsSizeAndPos();
         UpdateCashed();
+        sceneParams.SwitchAnimationBtn(modelTransform.GetComponent<Animation>());
     }
 
     public void NextModel()
@@ -208,5 +212,10 @@ public class Player : MonoBehaviour {
         modelTransform.position = Vector3.zero;
         modelTransform.localScale = Vector3.one;
         UtilityHelper.RotateTowardCamera(modelTransform.gameObject);
+    }
+
+    public void PlayModelAnimation()
+    {
+        modelTransform.SendMessage("PlayAnim", SendMessageOptions.DontRequireReceiver);
     }
 }

@@ -63,9 +63,9 @@ public class ListItem : MonoBehaviour {
 
     public void RemoveItem()
     {
-        OnRemoveItem(itemID);
         curSelectedID = 0;
         OnSelectItem(curSelectedID);
+        OnRemoveItem(itemID);
         Destroy(gameObject);
     }
 }

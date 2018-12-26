@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using UnityEngine.SceneManagement;
 using UnityEngine;
 
 public class ModelListWindow : MonoBehaviour {
@@ -49,6 +48,11 @@ public class ModelListWindow : MonoBehaviour {
             item.SetID(i);
             i++;
         }
+    }
+
+    public void AddNewModel()
+    {
+        SceneManager.LoadScene("QR_scene");
     }
 
     public void OpenCloseWindow()

@@ -14,6 +14,11 @@ public class SceneParams : MonoBehaviour {
     [SerializeField]
     private Sprite scaleSprite;
 
+    [SerializeField]
+    private Text priceField;
+    [SerializeField]
+    private Text nameField;
+
     private bool rotate = true;
 
     [SerializeField]
@@ -36,6 +41,12 @@ public class SceneParams : MonoBehaviour {
             }
         }
 #endif
+    }
+
+    public void SetModelInfo(ModelInfo info)
+    {
+        priceField.text = info.price;
+        nameField.text = info.name;
     }
 
     public void SwitchPitchImage()

@@ -59,7 +59,7 @@ public class ModelLoader : MonoBehaviour {
             loadingProgress.value = 100 * www.progress;
             yield return request;
             GameObject model = Instantiate(request.asset as GameObject);
-            Models.AddModel(model);
+            Models.AddModel(model, model_url);
 
             assetBundle.Unload(false);
             OnBundleLoaded();

@@ -36,16 +36,19 @@ public class Models : MonoBehaviour {
             models.ForEach( (model)=> model.transform.SetParent(parent));
     }
 
-    public static void AddModel(GameObject model)
+    public static void AddModel(GameObject model, string model_url)
     {
         model.AddComponent<AnimManager>();
         models.Add(model);
 
+        string new_url = model_url.Substring(model_url.IndexOf("&t=") + 3);
+        string[] url_arr = new_url.Split('&');
+
         ModelInfo modelInfo = new ModelInfo
         {
-            name = "Model_" + models.Count.ToString(),
+            name = url_arr[0],
             description = "",
-            price = ""
+            price = url_arr[1].Substring(2)
         };
         modelsInfo.Add(modelInfo);
 

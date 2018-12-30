@@ -176,6 +176,7 @@ public class Player : MonoBehaviour {
         SetIndicatorsParent();
         SetIndicatorsSizeAndPos();
         UpdateCashed();
+        sceneParams.SetModelInfo(Models.GetModelInfo(curModelIndex));
         sceneParams.SwitchAnimationBtn(modelTransform.GetComponent<Animation>());
     }
 

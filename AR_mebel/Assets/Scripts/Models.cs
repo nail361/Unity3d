@@ -4,27 +4,33 @@ using UnityEngine.SceneManagement;
 
 public class Models : MonoBehaviour {
 
-    public static int ModelsCount{
+    public int ModelsCount{
         get{
             return models.Count;
         }
     }
 
-    private static List<GameObject> models;
+    public List<GameObject> models;
 
-    private static List<ModelInfo> modelsInfo;
+    private List<ModelInfo> modelsInfo;
 
     public static Models _instance;
 
     private void Awake()
     {
-        if (_instance != null) return;
+        if (_instance != null) {
+            Destroy(gameObject);
+            return;
+        }
+        else
+        {
+            _instance = this;
+            DontDestroyOnLoad(gameObject);
+            models = new List<GameObject>();
+            modelsInfo = new List<ModelInfo>();
+        }
 
-        _instance = this;
-        DontDestroyOnLoad(gameObject);
-        models = new List<GameObject>();
-        modelsInfo = new List<ModelInfo>();
-        SceneManager.sceneLoaded += OnLevelLoaded;
+        SceneManager.sceneLoaded += _instance.OnLevelLoaded;
     }
 
     private void OnLevelLoaded(Scene scene, LoadSceneMode mode)
@@ -33,10 +39,16 @@ public class Models : MonoBehaviour {
 
         Transform parent = GameObject.FindGameObjectWithTag("Player").transform;
         if (parent)
-            models.ForEach( (model)=> model.transform.SetParent(parent));
+            models.ForEach((model) => model.transform.SetParent(parent) );
     }
 
-    public static void AddModel(GameObject model, string model_url)
+    public void OnPlayerDestroy()
+    {
+        Debug.Log("PLAYER WAS DESTROYED");
+        models.ForEach((model) => { Debug.Log(model.name); model.transform.SetParent(transform); });
+    }
+
+    public void AddModel(GameObject model, string model_url)
     {
         model.AddComponent<AnimManager>();
         models.Add(model);
@@ -59,29 +71,29 @@ public class Models : MonoBehaviour {
         model.name = "Model_" + models.Count.ToString();
     }
 
-    public static void Remove(int modelIndex)
+    public void Remove(int modelIndex)
     {
         Destroy(models[modelIndex]);
         models.RemoveAt(modelIndex);
         modelsInfo.RemoveAt(modelIndex);
     }
 
-    public static ModelInfo GetModelInfo(int modelIndex)
+    public ModelInfo GetModelInfo(int modelIndex)
     {
         return modelsInfo[modelIndex];
     }
 
-    public static GameObject GetModel(int modelIndex)
+    public GameObject GetModel(int modelIndex)
     {
         return models[modelIndex];
     }
     
-    public static void HideModel(int modelIndex)
+    public void HideModel(int modelIndex)
     {
         models[modelIndex].SetActive(false);
     }
 
-    public static void ShowModel(int modelIndex)
+    public void ShowModel(int modelIndex)
     {
         models[modelIndex].SetActive(true);
     }

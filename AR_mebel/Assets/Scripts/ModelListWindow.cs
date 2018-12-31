@@ -22,10 +22,10 @@ public class ModelListWindow : MonoBehaviour {
 
     private void FillModelsList()
     {
-        for (int i = 0; i < Models.ModelsCount; i++)
+        for (int i = 0; i < Models._instance.ModelsCount; i++)
         {
             GameObject item = Instantiate(listItemPref, listPlacement, false);
-            item.GetComponent<ListItem>().Init(Models.GetModelInfo(i), i);
+            item.GetComponent<ListItem>().Init(Models._instance.GetModelInfo(i), i);
             item.GetComponent<ListItem>().OnSelectItem += new ListItem.ItemHandler(SelectItem);
             item.GetComponent<ListItem>().OnRemoveItem += new ListItem.ItemHandler(ItemRemove);
         }
@@ -38,7 +38,7 @@ public class ModelListWindow : MonoBehaviour {
 
     private void ItemRemove(int itemID)
     {
-        Models.Remove(itemID);
+        Models._instance.Remove(itemID);
 
         ListItem[] items = listPlacement.GetComponentsInChildren<ListItem>();
 

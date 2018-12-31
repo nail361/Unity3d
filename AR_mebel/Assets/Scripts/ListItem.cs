@@ -51,7 +51,7 @@ public class ListItem : MonoBehaviour {
 
     void Update()
     {
-        removeBtn.SetActive(curSelectedID == itemID && Models.ModelsCount > 1);
+        removeBtn.SetActive(curSelectedID == itemID && Models._instance.ModelsCount > 1);
         image.color = curSelectedID == itemID ? activeColor : inactiveColor;
     }
 

@@ -163,29 +163,29 @@ public class Player : MonoBehaviour {
 
     public void SelectModel(int modelID)
     {
-        Models.HideModel(curModelIndex);
+        Models._instance.HideModel(curModelIndex);
         curModelIndex = modelID;
         ChangeModel();
     }
 
     private void ChangeModel()
     {
-        modelTransform = Models.GetModel(curModelIndex).transform;
-        Models.ShowModel(curModelIndex);
+        modelTransform = Models._instance.GetModel(curModelIndex).transform;
+        Models._instance.ShowModel(curModelIndex);
 
         SetIndicatorsParent();
         SetIndicatorsSizeAndPos();
         UpdateCashed();
-        sceneParams.SetModelInfo(Models.GetModelInfo(curModelIndex));
+        sceneParams.SetModelInfo(Models._instance.GetModelInfo(curModelIndex));
         sceneParams.SwitchAnimationBtn(modelTransform.GetComponent<Animation>());
     }
 
     public void NextModel()
     {
-        Models.HideModel(curModelIndex);
+        Models._instance.HideModel(curModelIndex);
         curModelIndex++;
 
-        if (curModelIndex >= Models.ModelsCount)
+        if (curModelIndex >= Models._instance.ModelsCount)
             curModelIndex = 0;
 
         ChangeModel();
@@ -193,11 +193,11 @@ public class Player : MonoBehaviour {
 
     public void PrevModel()
     {
-        Models.HideModel(curModelIndex);
+        Models._instance.HideModel(curModelIndex);
         curModelIndex--;
 
         if (curModelIndex < 0 )
-            curModelIndex = Models.ModelsCount - 1;
+            curModelIndex = Models._instance.ModelsCount - 1;
 
         ChangeModel();
     }
@@ -218,5 +218,10 @@ public class Player : MonoBehaviour {
     public void PlayModelAnimation()
     {
         modelTransform.SendMessage("PlayAnim", SendMessageOptions.DontRequireReceiver);
+    }
+
+    private void OnDestroy()
+    {
+        Models._instance.OnPlayerDestroy();
     }
 }

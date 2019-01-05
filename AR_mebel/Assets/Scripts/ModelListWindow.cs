@@ -45,13 +45,21 @@ public class ModelListWindow : MonoBehaviour {
         int i = 0;
         foreach(ListItem item in items)
         {
-            item.SetID(i);
-            i++;
+            if (item.ItemID == itemID)
+            {
+                Destroy(item.gameObject);
+            }
+            else
+            {
+                item.ItemID = i;
+                i++;
+            }
         }
     }
 
     public void AddNewModel()
     {
+        Models._instance.PrepareModelsForQRScene();
         SceneManager.LoadScene("QR_scene");
     }
 

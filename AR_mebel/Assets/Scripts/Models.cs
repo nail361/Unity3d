@@ -42,10 +42,12 @@ public class Models : MonoBehaviour {
             models.ForEach((model) => model.transform.SetParent(parent) );
     }
 
-    public void OnPlayerDestroy()
+    public void PrepareModelsForQRScene()
     {
-        Debug.Log("PLAYER WAS DESTROYED");
-        models.ForEach((model) => { Debug.Log(model.name); model.transform.SetParent(transform); });
+        models.ForEach((model) => {
+            model.transform.SetParent(transform);
+            model.SetActive(false);
+        });
     }
 
     public void AddModel(GameObject model, string model_url)

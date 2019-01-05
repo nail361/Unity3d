@@ -3,7 +3,11 @@ using UnityEngine.UI;
 
 public class ListItem : MonoBehaviour {
 
-    public int itemID;
+    public int ItemID
+    {
+        get;
+        set;
+    }
 
     [Header("Item Fields")]
     [SerializeField]
@@ -41,23 +45,18 @@ public class ListItem : MonoBehaviour {
         if (descriptionField) descriptionField.text = modelInfo.description;
         if (priceField) priceField.text = modelInfo.price;
 
-        SetID(id);
-    }
-
-    public void SetID(int id)
-    {
-        itemID = id;
+        ItemID = id;
     }
 
     void Update()
     {
-        removeBtn.SetActive(curSelectedID == itemID && Models._instance.ModelsCount > 1);
-        image.color = curSelectedID == itemID ? activeColor : inactiveColor;
+        removeBtn.SetActive(curSelectedID == ItemID && Models._instance.ModelsCount > 1);
+        image.color = curSelectedID == ItemID ? activeColor : inactiveColor;
     }
 
     public void SelectItem()
     {
-        curSelectedID = itemID;
+        curSelectedID = ItemID;
         OnSelectItem(curSelectedID);
     }
 
@@ -65,7 +64,6 @@ public class ListItem : MonoBehaviour {
     {
         curSelectedID = 0;
         OnSelectItem(curSelectedID);
-        OnRemoveItem(itemID);
-        Destroy(gameObject);
+        OnRemoveItem(ItemID);
     }
 }

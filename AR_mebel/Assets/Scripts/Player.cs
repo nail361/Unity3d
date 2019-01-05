@@ -219,9 +219,4 @@ public class Player : MonoBehaviour {
     {
         modelTransform.SendMessage("PlayAnim", SendMessageOptions.DontRequireReceiver);
     }
-
-    private void OnDestroy()
-    {
-        Models._instance.OnPlayerDestroy();
-    }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
@@ -43,27 +44,32 @@ public class ModelLoader : MonoBehaviour {
             yield return null;
         }
 
-        using (WWW www = WWW.LoadFromCacheOrDownload(server_url+model_url, 0))
+        using (UnityWebRequest webRequest = UnityWebRequestAssetBundle.GetAssetBundle(server_url + model_url))
         {
-            loadingProgress.value = 100 * www.progress;
-            yield return www;
-            if (www.error != null) {
-                warningTextField.text = "Ошибка загрузки: " + www.error;
+
+            yield return webRequest.SendWebRequest();
+
+            if (webRequest.isNetworkError || webRequest.isHttpError)
+            {
+                warningTextField.text = "Ошибка загрузки: " + webRequest.error;
                 StartCoroutine(ReloadStage());
-                throw new System.Exception("WWW download:" + www.error + " url:" + www.url);
+                throw new System.Exception("WWW download:" + webRequest.error + " url:" + webRequest.url);
             }
+            else
+            {
+                AssetBundle assetBundle = DownloadHandlerAssetBundle.GetContent(webRequest);
 
-            AssetBundle assetBundle = www.assetBundle;
+                AssetBundleRequest request = assetBundle.LoadAssetAsync("model.prefab", typeof(GameObject));
+                loadingProgress.value = 100 * request.progress;
+                yield return request;
+                GameObject model = Instantiate(request.asset as GameObject);
+                Models._instance.AddModel(model, model_url);
 
-            AssetBundleRequest request = assetBundle.LoadAssetAsync("model.prefab", typeof(GameObject));
-            loadingProgress.value = 100 * www.progress;
-            yield return request;
-            GameObject model = Instantiate(request.asset as GameObject);
-            Models._instance.AddModel(model, model_url);
-
-            assetBundle.Unload(false);
-            OnBundleLoaded();
+                assetBundle.Unload(false);
+                OnBundleLoaded();
+            }
         }
+
     }
 
     private IEnumerator ReloadStage()

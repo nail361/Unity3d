@@ -53,6 +53,8 @@ public class StartupScript : Editor {
                 CreateAssetBundle();
             }
         }
+		
+		EditorApplication.Exit(0);
     }
 
     private static void ScaleModel(GameObject model)

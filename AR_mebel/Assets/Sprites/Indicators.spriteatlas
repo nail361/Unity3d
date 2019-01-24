@@ -4,7 +4,8 @@
 SpriteAtlas:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_Name: Indicators
   m_EditorData:
     serializedVersion: 2
@@ -43,6 +44,7 @@ SpriteAtlas:
     - {fileID: 2800000, guid: 6ee182e2111c78e47aafa0ff3becc059, type: 3}
     - {fileID: 2800000, guid: b47fce20c7db04e4bae9f521214fd889, type: 3}
     - {fileID: 2800000, guid: fae41a341d82e334d88d36599f7015c7, type: 3}
+    totalSpriteSurfaceArea: 0
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites: []

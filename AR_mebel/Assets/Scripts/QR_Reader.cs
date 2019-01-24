@@ -14,12 +14,12 @@ public class QR_Reader : MonoBehaviour
     [SerializeField]
     public RawImage rawimage;
 
-    public Texture2D encoded;
+    //public Texture2D encoded;
 
     private WebCamTexture camTexture;
     private Thread qrThread;
 
-    private Color32[] c;
+    private Color32[] camPixels;
     private int W, H;
 
     private bool isQuit;
@@ -60,10 +60,19 @@ public class QR_Reader : MonoBehaviour
     {
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
 
-        encoded = new Texture2D(256, 256);
-
-        camTexture = new WebCamTexture(640, 480, 30);
+        //encoded = new Texture2D(256, 256);
+        camTexture = new WebCamTexture(Screen.width, Screen.height, 25);
         rawimage.texture = camTexture;
+
+//#if UNITY_IOS
+        if (camTexture.videoVerticallyMirrored)
+        {
+            Quaternion rotation = Quaternion.Euler(0, 0, 180);
+            Matrix4x4 rotationMatrix = Matrix4x4.TRS(Vector3.zero, rotation, new Vector3(1f, 1f, 1));
+            rawimage.material.SetMatrix("_Rotation", rotationMatrix);
+        }
+//#endif
+
         rawimage.material.mainTexture = camTexture;
         OnEnable();
 
@@ -82,17 +91,16 @@ public class QR_Reader : MonoBehaviour
             }
         }
 #endif
-        if (c == null)
+        if (camPixels == null)
         {
-            c = camTexture.GetPixels32();
+            camPixels = camTexture.GetPixels32();
         }
 
-        var textForEncoding = QR_result;
-        if (canCheck && textForEncoding.Length > 0)
+        if (canCheck && QR_result.Length > 0)
         {
-            var color32 = Encode(textForEncoding, encoded.width, encoded.height);
-            encoded.SetPixels32(color32);
-            encoded.Apply();
+            //var color32 = Encode(textForEncoding, encoded.width, encoded.height);
+            //encoded.SetPixels32(color32);
+            //encoded.Apply();
             
             if (CheckUrl())
             {
@@ -131,8 +139,15 @@ public class QR_Reader : MonoBehaviour
     void DecodeQR()
     {
         var barcodeReader = new BarcodeReader();
+
+#if UNITY_IOS
+        barcodeReader.AutoRotate = true;
+        barcodeReader.TryInverted = true;
+        barcodeReader.Options.TryHarder = false;
+#else
         barcodeReader.AutoRotate = false;
         barcodeReader.Options.TryHarder = false;
+#endif
 
         while (true)
         {
@@ -142,7 +157,7 @@ public class QR_Reader : MonoBehaviour
             try
             {
                 // decode the current frame
-                var result = barcodeReader.Decode(c, W, H);
+                Result result = barcodeReader.Decode(camPixels, W, H);
                 if (result != null)
                 {
                     print(result.Text);
@@ -151,14 +166,16 @@ public class QR_Reader : MonoBehaviour
 
                 // Sleep a little bit and set the signal to get the next frame
                 Thread.Sleep(2000);
-                c = null;
+                camPixels = null;
             }
             catch
             {
+                print("ERROR");
             }
         }
     }
 
+    /*
     private static Color32[] Encode(string textForEncoding, int width, int height)
     {
         var writer = new BarcodeWriter
@@ -172,6 +189,7 @@ public class QR_Reader : MonoBehaviour
         };
         return writer.Write(textForEncoding);
     }
+    */
 
     private IEnumerator HideWarning()
     {

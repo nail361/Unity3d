@@ -47,6 +47,7 @@ public class StartupScript : Editor {
                 ScreenCapture.CaptureScreenshot("Assets/Screenshot/screenshot.png");
 
                 PrefabUtility.CreatePrefab("Assets/Prefabs/model.prefab", model);
+                //PrefabUtility.SaveAsPrefabAsset(model, "Assets/Prefabs/model.prefab");
 
                 //DestroyImmediate(model);
 
@@ -94,7 +95,7 @@ public class StartupScript : Editor {
         buildMap[0].assetBundleName = "model";
 
         //CreateAssetBundle
-        BuildPipeline.BuildAssetBundles("Assets/AssetBundles", buildMap, BuildAssetBundleOptions.None, BuildTarget.Android);
+        BuildPipeline.BuildAssetBundles("Assets/AssetBundles", buildMap, BuildAssetBundleOptions.None, BuildTarget.NoTarget);
     }
 }
 

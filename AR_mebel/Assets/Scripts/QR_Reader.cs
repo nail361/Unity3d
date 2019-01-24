@@ -26,7 +26,9 @@ public class QR_Reader : MonoBehaviour
     private bool canCheck = true;
 
     private string QR_result = "";
-    
+
+    Result result;
+
     void OnEnable()
     {
         if (camTexture != null)
@@ -64,14 +66,14 @@ public class QR_Reader : MonoBehaviour
         camTexture = new WebCamTexture(Screen.width, Screen.height, 25);
         rawimage.texture = camTexture;
 
-//#if UNITY_IOS
-        if (camTexture.videoVerticallyMirrored)
-        {
+#if UNITY_IOS
+        //if (camTexture.videoVerticallyMirrored)
+        //{
             Quaternion rotation = Quaternion.Euler(0, 0, 180);
             Matrix4x4 rotationMatrix = Matrix4x4.TRS(Vector3.zero, rotation, new Vector3(1f, 1f, 1));
             rawimage.material.SetMatrix("_Rotation", rotationMatrix);
-        }
-//#endif
+        //}
+#endif
 
         rawimage.material.mainTexture = camTexture;
         OnEnable();
@@ -91,10 +93,17 @@ public class QR_Reader : MonoBehaviour
             }
         }
 #endif
-        if (camPixels == null)
+
+        if (W == 16)
         {
-            camPixels = camTexture.GetPixels32();
+            W = camTexture.width;
+            H = camTexture.height;
         }
+        else
+            if (camPixels == null)
+            {
+                camPixels = camTexture.GetPixels32();
+            }
 
         if (canCheck && QR_result.Length > 0)
         {
@@ -141,11 +150,12 @@ public class QR_Reader : MonoBehaviour
         var barcodeReader = new BarcodeReader();
 
 #if UNITY_IOS
-        barcodeReader.AutoRotate = true;
-        barcodeReader.TryInverted = true;
-        barcodeReader.Options.TryHarder = false;
+        barcodeReader.AutoRotate = false;
+        barcodeReader.TryInverted = false;
+        barcodeReader.Options.TryHarder = true;
 #else
         barcodeReader.AutoRotate = false;
+        barcodeReader.TryInverted = false;
         barcodeReader.Options.TryHarder = false;
 #endif
 
@@ -157,16 +167,21 @@ public class QR_Reader : MonoBehaviour
             try
             {
                 // decode the current frame
-                Result result = barcodeReader.Decode(camPixels, W, H);
-                if (result != null)
+                if (camPixels != null)
                 {
-                    print(result.Text);
-                    QR_result = result.Text;
-                }
+                    print("camPixels :" + camPixels.Length);
+                    result = barcodeReader.Decode(camPixels, W, H);
+                    print("W & H :" + W + " - " + H);
+                    if (result != null)
+                    {
+                        print("OK :" + result.Text);
+                        QR_result = result.Text;
+                    }
 
-                // Sleep a little bit and set the signal to get the next frame
-                Thread.Sleep(2000);
-                camPixels = null;
+                    // Sleep a little bit and set the signal to get the next frame
+                    Thread.Sleep(2000);
+                    camPixels = null;
+                }
             }
             catch
             {

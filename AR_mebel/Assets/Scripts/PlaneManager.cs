@@ -200,7 +200,7 @@ public class PlaneManager : MonoBehaviour
         // Check trackers to see if started and start if necessary
         m_PositionalDeviceTracker = TrackerManager.Instance.GetTracker<PositionalDeviceTracker>();
         m_SmartTerrain = TrackerManager.Instance.GetTracker<SmartTerrain>();
-        m_PositionalDeviceTracker = null;
+
         if (m_PositionalDeviceTracker != null && m_SmartTerrain != null)
         {
             if (!m_PositionalDeviceTracker.IsActive)

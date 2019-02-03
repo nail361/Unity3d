@@ -70,7 +70,8 @@ public class QR_Reader : MonoBehaviour
         //if (camTexture.videoVerticallyMirrored)
         //{
             Quaternion rotation = Quaternion.Euler(0, 0, 180);
-            Matrix4x4 rotationMatrix = Matrix4x4.TRS(Vector3.zero, rotation, new Vector3(1f, 1f, 1));
+            Matrix4x4 rotationMatrix = Matrix4x4.TRS(Vector3.zero, rotation, new Vector3(-1f, 1f, 1));
+            rawimage.material.doubleSidedGI = true;
             rawimage.material.SetMatrix("_Rotation", rotationMatrix);
         //}
 #endif

@@ -111,18 +111,10 @@ public class PlaneManager : MonoBehaviour
         
         m_ContentPositioningBehaviour = m_PlaneFinder.GetComponent<ContentPositioningBehaviour>();
 
-        /*
-        if (!m_ProductPlacement.IsPlaced)
-        {
-            m_ContentPositioningBehaviour.PositionContentAtPlaneAnchor(result);
-            UtilityHelper.EnableRendererColliderCanvas(m_PlacementAugmentation, true);
-        }
-
-        if (!m_ProductPlacement.IsPlaced)
-        {
-            m_ProductPlacement.SetProductAnchor(m_PlacementAnchor.transform);
-        }
-        */
+        m_ContentPositioningBehaviour.AnchorStage = m_PlacementAnchor;
+        m_ContentPositioningBehaviour.PositionContentAtPlaneAnchor(result);
+        m_PlacementAugmentation.transform.localPosition = Vector3.zero;
+        UtilityHelper.RotateTowardCamera(m_PlacementAugmentation);
     }
 
     #endregion // GROUNDPLANE_CALLBACKS
@@ -224,7 +216,8 @@ public class PlaneManager : MonoBehaviour
 
     void ChangeToCustomTarget()
     {
-        DeviceTrackerARController.Instance.FusionProvider = FusionProviderType.OPTIMIZE_MODEL_TARGETS_AND_SMART_TERRAIN;
+        VuforiaRuntimeUtilities.SetAllowedFusionProviders(FusionProviderType.ALL);
+        //DeviceTrackerARController.Instance.FusionProvider = FusionProviderType.OPTIMIZE_MODEL_TARGETS_AND_SMART_TERRAIN;
         Player.transform.SetParent(TargetPlace.transform, true);
         CustomTarget.SetActive(true);
         TargetBuilderUI.SetActive(true);

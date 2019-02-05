@@ -196,7 +196,6 @@ GameObject:
   m_Component:
   - component: {fileID: 66290802}
   - component: {fileID: 66290801}
-  - component: {fileID: 66290800}
   - component: {fileID: 66290799}
   - component: {fileID: 66290798}
   - component: {fileID: 66290804}
@@ -235,14 +234,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mWorldCenterMode: 1
   mWorldCenter: {fileID: 287159797}
---- !u!81 &66290800
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 66290797}
-  m_Enabled: 0
 --- !u!20 &66290801
 Camera:
   m_ObjectHideFlags: 0
@@ -293,7 +284,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 66290797}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 1, z: -4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

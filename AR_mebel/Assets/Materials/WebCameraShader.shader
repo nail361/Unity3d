@@ -9,6 +9,9 @@ Shader "Custom/WebCameraShader"
    
     SubShader
     {      
+
+		Cull Off
+
         Pass
         {
             CGPROGRAM

@@ -62,7 +62,10 @@ public class ListItem : MonoBehaviour {
 
     public void RemoveItem()
     {
-        curSelectedID = 0;
+        if (ItemID == 0)
+            curSelectedID = 1;
+        else
+            curSelectedID = 0;
         OnSelectItem(curSelectedID);
         OnRemoveItem(ItemID);
     }

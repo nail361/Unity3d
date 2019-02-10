@@ -63,6 +63,7 @@ public class PlaneManager : MonoBehaviour
         m_PlacementAnchor = m_PlacementAugmentation.GetComponentInParent<AnchorBehaviour>();
     }
 
+    
     void Update()
     {
         if (!VuforiaRuntimeUtilities.IsPlayMode() && !AnchorExists)
@@ -72,7 +73,7 @@ public class PlaneManager : MonoBehaviour
 
         GroundPlaneHitReceived = (AutomaticHitTestFrameCount == Time.frameCount);
 
-        //SetSurfaceIndicatorVisible(GroundPlaneHitReceived);
+        SetSurfaceIndicatorVisible(GroundPlaneHitReceived);
     }
 
     void OnDestroy()
@@ -92,7 +93,8 @@ public class PlaneManager : MonoBehaviour
 
     public void HandleAutomaticHitTest(HitTestResult result)
     {
-        AutomaticHitTestFrameCount = Time.frameCount;
+        return;
+        //AutomaticHitTestFrameCount = Time.frameCount;
 
         if (!uiHasBeenInitialized)
         {
@@ -102,6 +104,7 @@ public class PlaneManager : MonoBehaviour
 
     public void HandleInteractiveHitTest(HitTestResult result)
     {
+        /*
         if (result == null)
         {
             Debug.LogError("Invalid hit test result!");
@@ -115,6 +118,7 @@ public class PlaneManager : MonoBehaviour
         m_ContentPositioningBehaviour.PositionContentAtPlaneAnchor(result);
         m_PlacementAugmentation.transform.localPosition = Vector3.zero;
         UtilityHelper.RotateTowardCamera(m_PlacementAugmentation);
+        */
     }
 
     #endregion // GROUNDPLANE_CALLBACKS
@@ -124,7 +128,7 @@ public class PlaneManager : MonoBehaviour
         Debug.Log("ResetScene() called.");
         UtilityHelper.EnableRendererColliderCanvas(m_PlacementAugmentation, false);
 
-        DeleteAnchors();
+        //DeleteAnchors();
     }
 
     public void ResetTrackers()
@@ -141,26 +145,27 @@ public class PlaneManager : MonoBehaviour
     }
 
     #region PRIVATE_METHODS
-
+    /*
     void DeleteAnchors()
     {
         m_PlacementAnchor.UnConfigureAnchor();
         AnchorExists = DoAnchorsExist();
     }
+    */
 
     void SetSurfaceIndicatorVisible(bool isVisible)
     {
-        
-        Renderer[] renderers = m_PlaneFinder.PlaneIndicator.GetComponentsInChildren<Renderer>(true);
-        Canvas[] canvas = m_PlaneFinder.PlaneIndicator.GetComponentsInChildren<Canvas>(true);
 
+        Renderer[] renderers = m_PlaneFinder.PlaneIndicator.GetComponentsInChildren<Renderer>(true);
+        //Canvas[] canvas = m_PlaneFinder.PlaneIndicator.GetComponentsInChildren<Canvas>(true);
+        /*
         foreach (Canvas c in canvas)
             c.enabled = isVisible;
-
+        */
         foreach (Renderer r in renderers)
             r.enabled = isVisible;
     }
-
+    
     bool DoAnchorsExist()
     {
         if (m_StateManager != null)
@@ -243,8 +248,6 @@ public class PlaneManager : MonoBehaviour
 
         m_PositionalDeviceTracker = TrackerManager.Instance.GetTracker<PositionalDeviceTracker>();
         m_SmartTerrain = TrackerManager.Instance.GetTracker<SmartTerrain>();
-
-
 
         if (m_PositionalDeviceTracker != null)
         {

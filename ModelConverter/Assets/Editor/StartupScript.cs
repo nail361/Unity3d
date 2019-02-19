@@ -5,7 +5,14 @@ using System.Linq;
 
 public class StartupScript : Editor {
 
-    public static string sAssetFolderPath = "Assets/Models";
+    private static string sAssetFolderPath = "Assets/Models";
+    private static GameObject model;
+    private static string m_FilePath = "";
+
+    private static float waiteTime = 2000.0f;
+    
+    private delegate void Callback();
+    private static Callback callback;
 
     [MenuItem("Assets/AddModelsToScene")]
     public static void Init()
@@ -20,6 +27,7 @@ public class StartupScript : Editor {
             if (Path.GetExtension(sFilePath).ToLower() == ".fbx")
             {
                 Debug.Log(sFilePath);
+                m_FilePath = sFilePath;
 
                 //Prepare FBX
                 ModelImporter modelImporter  = AssetImporter.GetAtPath(sFilePath) as ModelImporter;
@@ -33,28 +41,45 @@ public class StartupScript : Editor {
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
 
-                Object modelFBX = AssetDatabase.LoadAssetAtPath(sFilePath, typeof(Object));
-
-                GameObject model = Instantiate(modelFBX) as GameObject;
-                
-                model.AddComponent<BoxCollider>();
-                AttachBoxCollider.Init(model);
-                //Scale object
-                //ScaleModel(model);
-                //Attach textures
-                FindTextures.Init(model);
-
-                ScreenCapture.CaptureScreenshot("Assets/Screenshot/screenshot.png");
-
-                PrefabUtility.SaveAsPrefabAsset(model, "Assets/Prefabs/model.prefab");
-
-                //DestroyImmediate(model);
-
-                CreateAssetBundle();
+                Enabled();
+                callback += PrepareModel;
             }
         }
-		
-		//EditorApplication.Exit(0);
+
+        //EditorApplication.Exit(0);
+    }
+
+    private static void PrepareModel()
+    {
+        callback -= PrepareModel;
+        Disabled();
+
+        Object modelFBX = AssetDatabase.LoadAssetAtPath(m_FilePath, typeof(Object));
+
+        model = Instantiate(modelFBX) as GameObject;
+
+        model.AddComponent<BoxCollider>();
+        AttachBoxCollider.Init(model);
+        //Scale object
+        //ScaleModel(model);
+        //Attach textures
+        FindTextures.Init(model);
+
+        Enabled();
+        callback += CreateScreenshoot;
+    }
+
+    private static void CreateScreenshoot()
+    {
+        callback -= CreateScreenshoot;
+        Disabled();
+        ScreenCapture.CaptureScreenshot("Assets/Screenshot/screenshot.png");
+
+        PrefabUtility.SaveAsPrefabAsset(model, "Assets/Prefabs/model.prefab");
+
+        //DestroyImmediate(model);
+
+        CreateAssetBundle();
     }
 
     private static void ScaleModel(GameObject model)
@@ -96,32 +121,33 @@ public class StartupScript : Editor {
         //CreateAssetBundle
         BuildPipeline.BuildAssetBundles("Assets/AssetBundles", buildMap, BuildAssetBundleOptions.None, BuildTarget.iOS);
     }
-}
 
-/*
-private float m_LastEditorUpdateTime;
+    //private static float m_LastEditorUpdateTime;
+    private static float timeElapsed = 0.0f;
+    private static void Enabled()
+    {
+        //m_LastEditorUpdateTime = Time.realtimeSinceStartup;
+        timeElapsed = 0.0f;
+        EditorApplication.update += OnEditorUpdate;
+    }
+    private static void Disabled()
+    {
+        EditorApplication.update -= OnEditorUpdate;
+    }
 
-protected virtual void OnEnable()
-{
-#if UNITY_EDITOR
-    m_LastEditorUpdateTime = Time.realtimeSinceStartup;
-    EditorApplication.update += OnEditorUpdate;
-#endif
+    private static void OnEditorUpdate()
+    {
+        if (timeElapsed > waiteTime)
+        {
+            Debug.Log(timeElapsed);
+            callback();
+        }
+        else
+        {
+            timeElapsed += 1;
+        }
+    }
 }
-
-protected virtual void OnDisable()
-{
-#if UNITY_EDITOR
-    EditorApplication.update -= OnEditorUpdate;
-#endif
-}
-
-protected virtual void OnEditorUpdate()
-{
-    // In here you can check the current realtime, see if a certain
-    // amount of time has elapsed, and perform some task.
-}
-*/
 
 /*
 // Helper function for getting the command line arguments

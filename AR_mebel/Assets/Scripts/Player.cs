@@ -9,6 +9,8 @@ public class Player : MonoBehaviour {
 
     private float dist;
     private bool dragging = false;
+    private Vector3 oldPos;
+    private Vector3 newPos;
     private Vector3 offset;
     private Transform toDrag;
 
@@ -39,9 +41,44 @@ public class Player : MonoBehaviour {
         sceneParams = FindObjectOfType<SceneParams>();
         Invoke("ChangeModel", 3.0f);
     }
-
+    
     void Update()
     {
+#if UNITY_EDITOR
+        if (Input.GetMouseButtonDown(0))
+        {
+
+            Vector3 pos = Input.mousePosition;
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(pos);
+            if (Physics.Raycast(ray, out hit) && (hit.collider.name == modelTransform.name))
+            {
+                toDrag = hit.transform;
+                dist = Camera.main.WorldToScreenPoint(toDrag.position).z;
+                newPos = new Vector3(pos.x, pos.y, dist);
+                newPos = Camera.main.ScreenToWorldPoint(newPos);
+                oldPos = newPos;
+                offset = toDrag.position - newPos;
+                dragging = true;
+            }
+        }
+        if (dragging && Input.GetMouseButton(0))
+        {
+            newPos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, dist);
+            newPos = Camera.main.ScreenToWorldPoint(newPos);
+            newPos = newPos - oldPos;// - offset;
+
+            //offset = Vector3.zero;
+
+            oldPos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, dist));
+
+            toDrag.position += new Vector3(newPos.x, 0, newPos.z);
+        }
+        if (dragging && Input.GetMouseButtonUp(0))
+        {
+            dragging = false;
+        }
+#else
         if (Input.touchCount > 0)
         {
             if ((Input.touches.Length == 2 || Input.touches.Length == 3) &&
@@ -52,14 +89,13 @@ public class Player : MonoBehaviour {
 
             touches = Input.touches;
 
-            if (touches .Length != 1)
+            if (touches.Length != 1)
             {
                 dragging = false;
             }
             else if (touches.Length == 1)
             {
                 Vector3 pos = touches[0].position;
-                Vector3 v3;
 
                 if (touches[0].phase == TouchPhase.Began)
                 {
@@ -68,18 +104,23 @@ public class Player : MonoBehaviour {
                     if (Physics.Raycast(ray, out hit) && (hit.collider.name == modelTransform.name))
                     {
                         toDrag = hit.transform;
-                        dist = hit.transform.position.z - Camera.main.transform.position.z;
-                        v3 = new Vector3(pos.x, pos.y, dist);
-                        v3 = Camera.main.ScreenToWorldPoint(v3);
-                        offset = toDrag.position - v3;
+                        dist = Camera.main.WorldToScreenPoint(toDrag.position).z;
+                        newPos = new Vector3(pos.x, pos.y, dist);
+                        newPos = Camera.main.ScreenToWorldPoint(newPos);
+                        oldPos = newPos;
+                        offset = toDrag.position - newPos;
                         dragging = true;
                     }
                 }
                 if (dragging && touches[0].phase == TouchPhase.Moved)
                 {
-                    v3 = new Vector3(Input.mousePosition.x, Input.mousePosition.y, dist);
-                    v3 = Camera.main.ScreenToWorldPoint(v3);
-                    toDrag.position = v3 + offset;
+                    newPos = new Vector3(touches[0].position.x, touches[0].position.y, dist);
+                    newPos = Camera.main.ScreenToWorldPoint(newPos);
+                    newPos = newPos - oldPos;
+
+                    oldPos = Camera.main.ScreenToWorldPoint(new Vector3(touches[0].position.x, touches[0].position.y, dist));
+
+                    toDrag.position += new Vector3(newPos.x, 0, newPos.z);
                 }
                 if (dragging && (touches[0].phase == TouchPhase.Ended || touches[0].phase == TouchPhase.Canceled))
                 {
@@ -122,6 +163,7 @@ public class Player : MonoBehaviour {
             }
 
         }
+#endif
 
         UpdateIndicators();
     }

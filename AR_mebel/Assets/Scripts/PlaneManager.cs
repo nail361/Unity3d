@@ -194,6 +194,9 @@ public class PlaneManager : MonoBehaviour
 
         m_StateManager = TrackerManager.Instance.GetStateManager();
 
+#if UNITY_EDITOR
+        Invoke("ChangeToCustomTarget", 2.0f);
+#else
         // Check trackers to see if started and start if necessary
         m_PositionalDeviceTracker = TrackerManager.Instance.GetTracker<PositionalDeviceTracker>();
         m_SmartTerrain = TrackerManager.Instance.GetTracker<SmartTerrain>();
@@ -217,6 +220,7 @@ public class PlaneManager : MonoBehaviour
            // MessageBox.DisplayMessageBox(unsupportedDeviceTitle, unsupportedDeviceBody, false, null);
             Invoke("ChangeToCustomTarget", 2.0f);
         }
+#endif
     }
 
     void ChangeToCustomTarget()
@@ -237,10 +241,10 @@ public class PlaneManager : MonoBehaviour
             ResetScene();
     }
 
-    #endregion // VUFORIA_CALLBACKS
+#endregion // VUFORIA_CALLBACKS
 
 
-    #region DEVICE_TRACKER_CALLBACKS
+#region DEVICE_TRACKER_CALLBACKS
 
     void OnTrackerStarted()
     {
@@ -264,5 +268,5 @@ public class PlaneManager : MonoBehaviour
         Debug.Log("OnDevicePoseStatusChanged(" + status + ", " + statusInfo + ")");
     }
 
-    #endregion // DEVICE_TRACKER_CALLBACK_METHODS
+#endregion // DEVICE_TRACKER_CALLBACK_METHODS
 }

@@ -60,7 +60,8 @@ public class ModelLoader : MonoBehaviour {
                 AssetBundle assetBundle = DownloadHandlerAssetBundle.GetContent(webRequest);
 
                 AssetBundleRequest request = assetBundle.LoadAssetAsync("model.prefab", typeof(GameObject));
-                loadingProgress.value = 100 * request.progress;
+                if (loadingProgress.value < 100.0f)
+                    loadingProgress.value = 100.0f * request.progress;
                 yield return request;
                 GameObject model = Instantiate(request.asset as GameObject);
                 Models._instance.AddModel(model, model_url);

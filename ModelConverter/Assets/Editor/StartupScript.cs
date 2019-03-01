@@ -9,11 +9,6 @@ public class StartupScript : Editor {
     private static GameObject model;
     private static string m_FilePath = "";
 
-    private static float waiteTime = 2000.0f;
-    
-    private delegate void Callback();
-    private static Callback callback;
-
     [MenuItem("Assets/AddModelsToScene")]
     public static void Init()
     {
@@ -41,8 +36,7 @@ public class StartupScript : Editor {
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
 
-                Enabled();
-                callback += PrepareModel;
+                PrepareModel();
             }
         }
 
@@ -51,9 +45,6 @@ public class StartupScript : Editor {
 
     private static void PrepareModel()
     {
-        callback -= PrepareModel;
-        Disabled();
-
         Object modelFBX = AssetDatabase.LoadAssetAtPath(m_FilePath, typeof(Object));
 
         model = Instantiate(modelFBX) as GameObject;
@@ -65,14 +56,11 @@ public class StartupScript : Editor {
         //Attach textures
         FindTextures.Init(model);
 
-        Enabled();
-        callback += CreateScreenshoot;
+        CreateScreenshoot();
     }
 
     private static void CreateScreenshoot()
     {
-        callback -= CreateScreenshoot;
-        Disabled();
         ScreenCapture.CaptureScreenshot("Assets/Screenshot/screenshot.png");
 
         PrefabUtility.SaveAsPrefabAsset(model, "Assets/Prefabs/model.prefab");
@@ -121,32 +109,6 @@ public class StartupScript : Editor {
         //CreateAssetBundle
         BuildPipeline.BuildAssetBundles("Assets/AssetBundles", buildMap, BuildAssetBundleOptions.None, BuildTarget.iOS);
     }
-
-    //private static float m_LastEditorUpdateTime;
-    private static float timeElapsed = 0.0f;
-    private static void Enabled()
-    {
-        //m_LastEditorUpdateTime = Time.realtimeSinceStartup;
-        timeElapsed = 0.0f;
-        EditorApplication.update += OnEditorUpdate;
-    }
-    private static void Disabled()
-    {
-        EditorApplication.update -= OnEditorUpdate;
-    }
-
-    private static void OnEditorUpdate()
-    {
-        if (timeElapsed > waiteTime)
-        {
-            Debug.Log(timeElapsed);
-            callback();
-        }
-        else
-        {
-            timeElapsed += 1;
-        }
-    }
 }
 
 /*
@@ -164,4 +126,4 @@ private static string GetArg(string name)
     return null;
 }
 */
-// ./Applications/Unity/Unity.app/Contents/MacOS/Unity -batchmode -quit -projectPath ${PROJECT_PATH} -executeMethod MyScripName.MyMethod
+// "Unity.exe path" -batchmode -quit -projectPath "project path" -executeMethod MyScripName.MyMethod

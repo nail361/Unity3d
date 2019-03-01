@@ -12,6 +12,7 @@ public class StartupScript : Editor {
     [MenuItem("Assets/AddModelsToScene")]
     public static void Init()
     {
+
         string[] aux = sAssetFolderPath.Split(new char[] { '/' });
         string onlyFolderPath = aux[0] + "/" + aux[1] + "/";
 
@@ -39,8 +40,6 @@ public class StartupScript : Editor {
                 PrepareModel();
             }
         }
-
-        //EditorApplication.Exit(0);
     }
 
     private static void PrepareModel()
@@ -107,7 +106,18 @@ public class StartupScript : Editor {
         buildMap[0].assetBundleName = "model";
 
         //CreateAssetBundle
-        BuildPipeline.BuildAssetBundles("Assets/AssetBundles", buildMap, BuildAssetBundleOptions.None, BuildTarget.iOS);
+		BuildPipeline.BuildAssetBundles("Assets/AssetBundles/android", buildMap, BuildAssetBundleOptions.None, BuildTarget.Android);
+        BuildPipeline.BuildAssetBundles("Assets/AssetBundles/ios", buildMap, BuildAssetBundleOptions.None, BuildTarget.iOS);
+
+        RemoveTrash();
+    }
+
+    private static void RemoveTrash()
+    {
+        AssetDatabase.DeleteAsset(m_FilePath);
+        AssetDatabase.Refresh();
+
+        EditorApplication.Exit(0);
     }
 }
 

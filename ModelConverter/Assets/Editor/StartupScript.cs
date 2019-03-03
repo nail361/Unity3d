@@ -12,33 +12,27 @@ public class StartupScript : Editor {
     [MenuItem("Assets/AddModelsToScene")]
     public static void Init()
     {
+        FileInfo filePath = new FileInfo(Directory.GetFiles(sAssetFolderPath, "*.fbx").FirstOrDefault());
 
-        string[] aux = sAssetFolderPath.Split(new char[] { '/' });
-        string onlyFolderPath = aux[0] + "/" + aux[1] + "/";
-
-        string[] aFilePaths = Directory.GetFiles(onlyFolderPath);
-
-        foreach (string sFilePath in aFilePaths)
+        if (filePath != null)
         {
-            if (Path.GetExtension(sFilePath).ToLower() == ".fbx")
-            {
-                Debug.Log(sFilePath);
-                m_FilePath = sFilePath;
+            m_FilePath = sAssetFolderPath + "/" + filePath.Name;
 
-                //Prepare FBX
-                ModelImporter modelImporter  = AssetImporter.GetAtPath(sFilePath) as ModelImporter;
-                //modelImporter.ExtractTextures("Assets\\Models\\Textures");
-                modelImporter.materialLocation = ModelImporterMaterialLocation.External;
-                modelImporter.materialName = ModelImporterMaterialName.BasedOnMaterialName;
-                modelImporter.animationType = ModelImporterAnimationType.Legacy;
-                //ExtractMaterials(sFilePath, modelImporter);
+            Debug.Log(m_FilePath);
 
-                AssetDatabase.WriteImportSettingsIfDirty(sFilePath);
-                AssetDatabase.SaveAssets();
-                AssetDatabase.Refresh();
+            //Prepare FBX
+            ModelImporter modelImporter  = AssetImporter.GetAtPath(m_FilePath) as ModelImporter;
+            //modelImporter.ExtractTextures("Assets\\Models\\Textures");
+            modelImporter.materialLocation = ModelImporterMaterialLocation.External;
+            modelImporter.materialName = ModelImporterMaterialName.BasedOnMaterialName;
+            modelImporter.animationType = ModelImporterAnimationType.Legacy;
+            //ExtractMaterials(sFilePath, modelImporter);
 
-                PrepareModel();
-            }
+            AssetDatabase.WriteImportSettingsIfDirty(m_FilePath);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+
+            PrepareModel();
         }
     }
 
@@ -50,8 +44,10 @@ public class StartupScript : Editor {
 
         model.AddComponent<BoxCollider>();
         AttachBoxCollider.Init(model);
+
         //Scale object
-        //ScaleModel(model);
+        ScaleModel(model);
+
         //Attach textures
         FindTextures.Init(model);
 
@@ -71,12 +67,35 @@ public class StartupScript : Editor {
 
     private static void ScaleModel(GameObject model)
     {
+        model.GetComponent<BoxCollider>().bounds.SetMinMax(new Vector3(.1f,.1f,.1f), new Vector3(2.0f, 2.0f, 2.0f));
+
         Vector3 size = model.GetComponent<BoxCollider>().bounds.size;
         float deltaScale = 0f;
+        float minSize = Mathf.Min(size.x, size.y, size.z);
+        float maxSize = Mathf.Max(size.x, size.y, size.z);
+        float scalePercent = 0.0f;
 
-        if (Mathf.Max(size.x, size.y, size.z) > 2f){
-            deltaScale = Mathf.Max(size.x, size.y, size.z) - 2f;
+        if (maxSize > 2.0f){
+            deltaScale = maxSize - 2.0f;
+
+            if (minSize - 2.2f < 0.0f)
+            {
+                deltaScale -= (2.2f - minSize);
+            }
+
+            scalePercent = deltaScale / (maxSize / 100);
         }
+        else if (maxSize < 2.0f)
+        {
+            deltaScale = 2.0f - maxSize;
+            scalePercent = deltaScale / (maxSize / 100) * -1;
+        }
+
+        model.transform.localScale = new Vector3(
+            model.transform.localScale.x - model.transform.localScale.x / 100 * scalePercent,
+            model.transform.localScale.y - model.transform.localScale.y / 100 * scalePercent,
+            model.transform.localScale.z - model.transform.localScale.z / 100 * scalePercent
+            );
 
     }
 

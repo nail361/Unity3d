@@ -44,7 +44,16 @@ public class ModelLoader : MonoBehaviour {
             yield return null;
         }
 
-        using (UnityWebRequest webRequest = UnityWebRequestAssetBundle.GetAssetBundle(server_url + model_url))
+        string combinedUrl = server_url + model_url;
+
+#if UNITY_IOS
+        combinedUrl+= "&p=ios";
+#else
+        combinedUrl+= "&p=android";
+#endif
+
+
+        using (UnityWebRequest webRequest = UnityWebRequestAssetBundle.GetAssetBundle(combinedUrl))
         {
 
             yield return webRequest.SendWebRequest();

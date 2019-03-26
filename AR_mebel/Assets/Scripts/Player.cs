@@ -40,6 +40,7 @@ public class Player : MonoBehaviour {
     {
         sceneParams = FindObjectOfType<SceneParams>();
         Invoke("ChangeModel", 3.0f);
+		Invoke("ResetModel", 3.1f);
     }
     
     void Update()

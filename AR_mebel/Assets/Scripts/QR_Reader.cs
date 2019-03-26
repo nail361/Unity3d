@@ -153,7 +153,7 @@ public class QR_Reader : MonoBehaviour
 #if UNITY_IOS
         barcodeReader.AutoRotate = false;
         barcodeReader.TryInverted = false;
-        barcodeReader.Options.TryHarder = true;
+        barcodeReader.Options.TryHarder = false;
 #else
         barcodeReader.AutoRotate = false;
         barcodeReader.TryInverted = false;

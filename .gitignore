@@ -2,6 +2,7 @@
 webGL_test
 *.apk
 VuforiaTest
+xcode-project
 ios
 win_build
 build

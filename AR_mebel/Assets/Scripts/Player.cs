@@ -40,7 +40,6 @@ public class Player : MonoBehaviour {
     {
         sceneParams = FindObjectOfType<SceneParams>();
         Invoke("ChangeModel", 3.0f);
-		Invoke("ResetModel", 3.1f);
     }
     
     void Update()
@@ -231,6 +230,8 @@ public class Player : MonoBehaviour {
         if (curModelIndex >= Models._instance.ModelsCount)
             curModelIndex = 0;
 
+        ListItem.SetSelectedID(curModelIndex);
+
         ChangeModel();
     }
 
@@ -241,6 +242,8 @@ public class Player : MonoBehaviour {
 
         if (curModelIndex < 0 )
             curModelIndex = Models._instance.ModelsCount - 1;
+
+        ListItem.SetSelectedID(curModelIndex);
 
         ChangeModel();
     }

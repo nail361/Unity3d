@@ -72,7 +72,7 @@ public class ModelLoader : MonoBehaviour {
                 if (loadingProgress.value < 100.0f)
                     loadingProgress.value = 100.0f * request.progress;
                 yield return request;
-                GameObject model = Instantiate(request.asset as GameObject);
+                GameObject model = Instantiate(request.asset as GameObject, Vector3.zero, Quaternion.identity);
                 Models._instance.AddModel(model, model_url);
 
                 assetBundle.Unload(false);

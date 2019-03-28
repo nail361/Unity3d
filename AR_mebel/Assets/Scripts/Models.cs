@@ -39,7 +39,7 @@ public class Models : MonoBehaviour {
 
         Transform parent = GameObject.FindGameObjectWithTag("Player").transform;
         if (parent)
-            models.ForEach((model) => model.transform.SetParent(parent) );
+            models.ForEach((model) => model.transform.SetParent(parent));
     }
 
     public void PrepareModelsForQRScene()

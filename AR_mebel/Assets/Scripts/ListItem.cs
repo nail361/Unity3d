@@ -69,4 +69,9 @@ public class ListItem : MonoBehaviour {
         OnSelectItem(curSelectedID);
         OnRemoveItem(ItemID);
     }
+
+    public static void SetSelectedID(int id)
+    {
+        curSelectedID = id;
+    }
 }

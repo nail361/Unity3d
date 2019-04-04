@@ -40,7 +40,11 @@ public class Player : MonoBehaviour {
     void Start()
     {
         sceneParams = FindObjectOfType<SceneParams>();
-        Invoke("ChangeModel", 3.0f);
+    }
+
+    public void Init()
+    {
+        Invoke("ChangeModel", 1.0f);
     }
     
     void Update()
@@ -90,11 +94,12 @@ public class Player : MonoBehaviour {
 
             touches = Input.touches;
 
+        /*
             if (touches[0].phase == TouchPhase.Ended)
             {
                 UpdateCashed();
             }
-
+        */
             if (touches.Length != 1)
             {
                 dragging = false;
@@ -190,15 +195,17 @@ public class Player : MonoBehaviour {
     private void SetIndicatorsSizeAndPos()
     {
         Vector3 modelSize = modelTransform.gameObject.GetComponent<BoxCollider>().bounds.size;
+        Debug.Log("MODEL SIZE = " + modelSize);
         float maxSize = Mathf.Max(modelSize.x, modelSize.z) / 10;
+        Debug.Log("maxSize = " + maxSize);
         modelSize = new Vector3(maxSize + 0.1f, 1.0f, maxSize + 0.1f);
         m_TranslationIndicator.transform.localScale = modelSize;
         m_RotationIndicator.transform.localScale = modelSize;
         m_ScaleIndicator.transform.localScale = modelSize;
 
-        m_TranslationIndicator.transform.localPosition = new Vector3(0, 0, modelSize.y / 2 * -1);
-        m_RotationIndicator.transform.localPosition = new Vector3(0, 0, modelSize.y / 2 * -1);
-        m_ScaleIndicator.transform.localPosition = new Vector3(0, 0, modelSize.y / 2 * -1);
+        m_TranslationIndicator.transform.localPosition = new Vector3(0, modelSize.y / 2 * -1, 0);
+        m_RotationIndicator.transform.localPosition = new Vector3(0, modelSize.y / 2 * -1, 0);
+        m_ScaleIndicator.transform.localPosition = new Vector3(0, modelSize.y / 2 * -1, 0);
     }
 
     private void SetIndicatorsParent()

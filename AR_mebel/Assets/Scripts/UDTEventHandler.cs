@@ -166,6 +166,7 @@ public class UDTEventHandler : MonoBehaviour, IUserDefinedTargetEventHandler
 
             TargetBuilderUI.SetActive(false);
             InterfaceUI.SetActive(true);
+            GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().Init();
         }
         else
         {

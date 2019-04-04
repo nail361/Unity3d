@@ -71,9 +71,9 @@ public class PlaneManager : MonoBehaviour
             AnchorExists = DoAnchorsExist();
         }
 
-        GroundPlaneHitReceived = (AutomaticHitTestFrameCount == Time.frameCount);
+        //GroundPlaneHitReceived = (AutomaticHitTestFrameCount == Time.frameCount);
 
-        SetSurfaceIndicatorVisible(GroundPlaneHitReceived);
+        //SetSurfaceIndicatorVisible(GroundPlaneHitReceived);
     }
 
     void OnDestroy()
@@ -93,18 +93,18 @@ public class PlaneManager : MonoBehaviour
 
     public void HandleAutomaticHitTest(HitTestResult result)
     {
-        return;
         //AutomaticHitTestFrameCount = Time.frameCount;
-
+        
+        /*
         if (!uiHasBeenInitialized)
         {
             //Показать UI
         }
+        */
     }
 
     public void HandleInteractiveHitTest(HitTestResult result)
     {
-        /*
         if (result == null)
         {
             Debug.LogError("Invalid hit test result!");
@@ -118,7 +118,6 @@ public class PlaneManager : MonoBehaviour
         m_ContentPositioningBehaviour.PositionContentAtPlaneAnchor(result);
         m_PlacementAugmentation.transform.localPosition = Vector3.zero;
         UtilityHelper.RotateTowardCamera(m_PlacementAugmentation);
-        */
     }
 
     #endregion // GROUNDPLANE_CALLBACKS
@@ -128,7 +127,7 @@ public class PlaneManager : MonoBehaviour
         Debug.Log("ResetScene() called.");
         UtilityHelper.EnableRendererColliderCanvas(m_PlacementAugmentation, false);
 
-        //DeleteAnchors();
+        DeleteAnchors();
     }
 
     public void ResetTrackers()
@@ -145,13 +144,11 @@ public class PlaneManager : MonoBehaviour
     }
 
     #region PRIVATE_METHODS
-    /*
     void DeleteAnchors()
     {
         m_PlacementAnchor.UnConfigureAnchor();
         AnchorExists = DoAnchorsExist();
     }
-    */
 
     void SetSurfaceIndicatorVisible(bool isVisible)
     {
@@ -209,6 +206,7 @@ public class PlaneManager : MonoBehaviour
                 m_SmartTerrain.Start();
 
             InterfaceUI.SetActive(true);
+            SetSurfaceIndicatorVisible(true);
         }
         else
         {

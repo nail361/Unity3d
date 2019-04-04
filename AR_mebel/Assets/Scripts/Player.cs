@@ -29,6 +29,7 @@ public class Player : MonoBehaviour {
 
     Touch[] touches;
     bool isFirstFrameWithTwoTouches;
+    Vector3 intiScale;
     float cachedTouchAngle;
     float cachedTouchDistance;
     float cachedAugmentationScale;
@@ -88,6 +89,11 @@ public class Player : MonoBehaviour {
             }
 
             touches = Input.touches;
+
+            if (touches[0].phase == TouchPhase.Ended)
+            {
+                UpdateCashed();
+            }
 
             if (touches.Length != 1)
             {
@@ -161,7 +167,6 @@ public class Player : MonoBehaviour {
             {
                 UpdateCashed();
             }
-
         }
 #endif
 
@@ -215,6 +220,8 @@ public class Player : MonoBehaviour {
         modelTransform = Models._instance.GetModel(curModelIndex).transform;
         Models._instance.ShowModel(curModelIndex);
 
+        intiScale = modelTransform.localScale;
+
         SetIndicatorsParent();
         SetIndicatorsSizeAndPos();
         UpdateCashed();
@@ -257,7 +264,7 @@ public class Player : MonoBehaviour {
     public void ResetModel()
     {
         modelTransform.position = Vector3.zero;
-        modelTransform.localScale = Vector3.one;
+        modelTransform.localScale = intiScale;
         UtilityHelper.RotateTowardCamera(modelTransform.gameObject);
     }
 

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using UnityEngine;
 using UnityEditor;
 using System.Linq;
@@ -20,25 +21,41 @@ public class StartupScript : Editor {
 
             Debug.Log(m_FilePath);
 
-            //Prepare FBX
-            ModelImporter modelImporter  = AssetImporter.GetAtPath(m_FilePath) as ModelImporter;
-            //modelImporter.ExtractTextures("Assets\\Models\\Textures");
-            modelImporter.materialLocation = ModelImporterMaterialLocation.External;
-            modelImporter.materialName = ModelImporterMaterialName.BasedOnMaterialName;
-            modelImporter.animationType = ModelImporterAnimationType.Legacy;
-            //ExtractMaterials(sFilePath, modelImporter);
+            try
+            {
+                //Prepare FBX
+                ModelImporter modelImporter = AssetImporter.GetAtPath(m_FilePath) as ModelImporter;
+                //modelImporter.ExtractTextures("Assets\\Models\\Textures");
+                modelImporter.materialLocation = ModelImporterMaterialLocation.External;
+                modelImporter.materialName = ModelImporterMaterialName.BasedOnMaterialName;
+                modelImporter.animationType = ModelImporterAnimationType.Legacy;
+                //ExtractMaterials(sFilePath, modelImporter);
+            }
+            catch (Exception ex)
+            {
+                Debug.Log(ex.Message);
+                EditorApplication.Exit(1);
+            }
 
             AssetDatabase.WriteImportSettingsIfDirty(m_FilePath);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 
-            PrepareModel();
+            try
+            {
+                PrepareModel();
+            }
+            catch (Exception ex)
+            {
+                Debug.Log(ex.Message);
+                EditorApplication.Exit(2);
+            }
         }
     }
 
     private static void PrepareModel()
     {
-        Object modelFBX = AssetDatabase.LoadAssetAtPath(m_FilePath, typeof(Object));
+        UnityEngine.Object modelFBX = AssetDatabase.LoadAssetAtPath(m_FilePath, typeof(UnityEngine.Object));
 
         model = Instantiate(modelFBX) as GameObject;
 

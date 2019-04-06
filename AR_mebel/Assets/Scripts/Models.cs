@@ -71,6 +71,7 @@ public class Models : MonoBehaviour {
         HideModel(models.Count-1);
 
         model.name = "Model_" + models.Count.ToString();
+        model.layer = LayerMask.NameToLayer("Model");
     }
 
     public void Remove(int modelIndex)

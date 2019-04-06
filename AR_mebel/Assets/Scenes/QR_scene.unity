@@ -1930,6 +1930,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   models: []
+  ModelLayer:
+    serializedVersion: 2
+    m_Bits: 512
 --- !u!1 &1975444580
 GameObject:
   m_ObjectHideFlags: 0

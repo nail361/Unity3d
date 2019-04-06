@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections.Generic;
 
 public class Player : MonoBehaviour {
 
@@ -52,7 +51,6 @@ public class Player : MonoBehaviour {
 #if UNITY_EDITOR
         if (Input.GetMouseButtonDown(0))
         {
-
             Vector3 pos = Input.mousePosition;
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(pos);
@@ -86,20 +84,7 @@ public class Player : MonoBehaviour {
 #else
         if (Input.touchCount > 0)
         {
-            if ((Input.touches.Length == 2 || Input.touches.Length == 3) &&
-                Input.touches.Length != touches.Length)
-            {
-                UpdateCashed();
-            }
-
             touches = Input.touches;
-
-        /*
-            if (touches[0].phase == TouchPhase.Ended)
-            {
-                UpdateCashed();
-            }
-        */
             if (touches.Length != 1)
             {
                 dragging = false;
@@ -112,7 +97,14 @@ public class Player : MonoBehaviour {
                 {
                     RaycastHit hit;
                     Ray ray = Camera.main.ScreenPointToRay(pos);
-                    if (Physics.Raycast(ray, out hit) && (hit.collider.name == modelTransform.name))
+
+                    /*
+                    if (Physics.Raycast(ray, out hit, LayerMask.NameToLayer("UI")))
+                    {
+                        return;
+                    }
+                    */
+                    if (Physics.Raycast(ray, out hit, LayerMask.NameToLayer("Model")))
                     {
                         toDrag = hit.transform;
                         dist = Camera.main.WorldToScreenPoint(toDrag.position).z;
@@ -141,6 +133,12 @@ public class Player : MonoBehaviour {
 
             if (touches.Length > 1)
             {
+                if (touches[1].phase == TouchPhase.Ended || touches[1].phase == TouchPhase.Canceled)
+                {
+                    UpdateCashed();
+                    return;
+                }
+
                 Touch touch1 = touches[touches.Length - 2];
                 Touch touch2 = touches[touches.Length - 1];
 
@@ -167,10 +165,6 @@ public class Player : MonoBehaviour {
                 else
                     modelTransform.localEulerAngles = cachedAugmentationRotation - new Vector3(0, angleDelta * 3f, 0);
 
-            }
-            else if (touches.Length < 2)
-            {
-                UpdateCashed();
             }
         }
 #endif

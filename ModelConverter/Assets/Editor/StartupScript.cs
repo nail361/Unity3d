@@ -10,6 +10,15 @@ public class StartupScript : Editor {
     private static GameObject model;
     private static string m_FilePath = "";
 
+    [MenuItem("Assets/ShowBounds")]
+    public static void ShowBounds()
+    {
+        Vector3 size = model.GetComponent<BoxCollider>().bounds.size;
+        Vector3 mesh = model.GetComponent<MeshFilter>().sharedMesh.bounds.size;
+        Debug.Log(size.x + "-" + size.y + "-" + size.z);
+        Debug.Log(mesh.x + "-" + mesh.y + "-" + mesh.z);
+    }
+
     [MenuItem("Assets/AddModelsToScene")]
     public static void Init()
     {
@@ -20,7 +29,7 @@ public class StartupScript : Editor {
             m_FilePath = sAssetFolderPath + "/" + filePath.Name;
 
             Debug.Log(m_FilePath);
-
+            
             try
             {
                 //Prepare FBX
@@ -36,11 +45,11 @@ public class StartupScript : Editor {
                 Debug.Log(ex.Message);
                 EditorApplication.Exit(1);
             }
-
+            
             AssetDatabase.WriteImportSettingsIfDirty(m_FilePath);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-
+            
             try
             {
                 PrepareModel();
@@ -58,25 +67,24 @@ public class StartupScript : Editor {
         UnityEngine.Object modelFBX = AssetDatabase.LoadAssetAtPath(m_FilePath, typeof(UnityEngine.Object));
 
         model = Instantiate(modelFBX) as GameObject;
-
+        model.transform.position = Vector3.zero;
+        model.transform.localScale = Vector3.one;
         model.AddComponent<BoxCollider>();
         AttachBoxCollider.Init(model);
 
         //Scale object
-        ScaleModel(model);
+        //ScaleModel(model);
+
+        //DestroyImmediate(model.GetComponent<BoxCollider>());
+        //model.AddComponent<BoxCollider>();
+        //AttachBoxCollider.Init(model);
 
         //Attach textures
         FindTextures.Init(model);
 
-        CreateScreenshoot();
-    }
-
-    private static void CreateScreenshoot()
-    {
-        ScreenCapture.CaptureScreenshot("Assets/Screenshot/screenshot.png");
+        //ScreenCapture.CaptureScreenshot("Assets/Screenshot/screenshot.png");
 
         PrefabUtility.SaveAsPrefabAsset(model, "Assets/Prefabs/model.prefab");
-
         //DestroyImmediate(model);
 
         CreateAssetBundle();
@@ -84,7 +92,7 @@ public class StartupScript : Editor {
 
     private static void ScaleModel(GameObject model)
     {
-        model.GetComponent<BoxCollider>().bounds.SetMinMax(new Vector3(.1f,.1f,.1f), new Vector3(2.0f, 2.0f, 2.0f));
+        //model.GetComponent<BoxCollider>().bounds.SetMinMax(new Vector3(.1f,.1f,.1f), new Vector3(2.0f, 2.0f, 2.0f));
 
         Vector3 size = model.GetComponent<BoxCollider>().bounds.size;
         float deltaScale = 0f;
@@ -105,15 +113,16 @@ public class StartupScript : Editor {
         else if (maxSize < 2.0f)
         {
             deltaScale = 2.0f - maxSize;
-            scalePercent = deltaScale / (maxSize / 100) * -1;
+            scalePercent = deltaScale / (maxSize / 100) *-1;
         }
-
+        /*
         model.transform.localScale = new Vector3(
             model.transform.localScale.x - model.transform.localScale.x / 100 * scalePercent,
             model.transform.localScale.y - model.transform.localScale.y / 100 * scalePercent,
             model.transform.localScale.z - model.transform.localScale.z / 100 * scalePercent
             );
-
+        */
+        RecalcualteMesh.ScaleModel(model, scalePercent);
     }
 
     private static void ExtractMaterials(string importedAssets, ModelImporter modelImporter)

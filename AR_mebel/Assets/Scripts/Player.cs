@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class Player : MonoBehaviour {
 
@@ -54,8 +55,14 @@ public class Player : MonoBehaviour {
             Vector3 pos = Input.mousePosition;
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(pos);
-            if (Physics.Raycast(ray, out hit) && (hit.collider.name == modelTransform.name))
+
+            bool hasCollision = Physics.Raycast(ray, out hit);
+
+            if (hasCollision && hit.collider.name == modelTransform.name)
             {
+                if (EventSystem.current.IsPointerOverGameObject())
+                    return;
+
                 toDrag = hit.transform;
                 dist = Camera.main.WorldToScreenPoint(toDrag.position).z;
                 newPos = new Vector3(pos.x, pos.y, dist);
@@ -75,7 +82,7 @@ public class Player : MonoBehaviour {
 
             oldPos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, dist));
 
-            toDrag.position += new Vector3(newPos.x, 0, newPos.z);
+            toDrag.position += new Vector3(newPos.x, 0, newPos.y);
         }
         if (dragging && Input.GetMouseButtonUp(0))
         {
@@ -98,14 +105,13 @@ public class Player : MonoBehaviour {
                     RaycastHit hit;
                     Ray ray = Camera.main.ScreenPointToRay(pos);
 
-                    /*
-                    if (Physics.Raycast(ray, out hit, LayerMask.NameToLayer("UI")))
+                    bool hasCollision = Physics.Raycast(ray, out hit);
+
+                    if (hasCollision && hit.collider.name == modelTransform.name)
                     {
-                        return;
-                    }
-                    */
-                    if (Physics.Raycast(ray, out hit, LayerMask.NameToLayer("Model")))
-                    {
+                        if (EventSystem.current.IsPointerOverGameObject())
+                            return;
+
                         toDrag = hit.transform;
                         dist = Camera.main.WorldToScreenPoint(toDrag.position).z;
                         newPos = new Vector3(pos.x, pos.y, dist);
